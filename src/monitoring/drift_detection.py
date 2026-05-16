@@ -15,6 +15,8 @@ import yaml
 from loguru import logger
 from dotenv import load_dotenv
 
+from src.monitoring.retraining_trigger import check_and_trigger
+
 load_dotenv()
 
 
@@ -181,6 +183,10 @@ def run_drift_detection(
     status = "🚨 DRIFT DETECTED" if drift_detected else "✅ No significant drift"
     logger.info(f"{status}: score={drift_score:.4f} | "
                 f"{n_drifted}/{n_features} features drifted")
+
+    # ── Automated Retraining ──────────────────────────────────────────────────
+    if params["monitoring"].get("auto_retrain", False):
+        check_and_trigger()
 
     return summary
 

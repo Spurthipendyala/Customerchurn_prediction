@@ -1,0 +1,938 @@
+{
+  "evalId": "eval-6ap-2026-05-16T13:50:02",
+  "results": {
+    "version": 3,
+    "timestamp": "2026-05-16T13:50:02.867Z",
+    "prompts": [
+      {
+        "id": "2ab5ec9b9df2b965342c831585267e0125f80163e44383e8bd4fcf4fbebd37c2",
+        "raw": "{\n  \"customerID\": \"TEST-001\",\n  \"tenure\": {{tenure}},\n  \"MonthlyCharges\": {{monthly_charges}},\n  \"TotalCharges\": {{total_charges}},\n  \"SeniorCitizen\": 0, \"Partner\": 0, \"Dependents\": 0,\n  \"PhoneService\": 1, \"MultipleLines\": 0,\n  \"OnlineSecurity\": 0, \"OnlineBackup\": 0, \"DeviceProtection\": 0,\n  \"TechSupport\": 0, \"StreamingTV\": 0, \"StreamingMovies\": 0,\n  \"PaperlessBilling\": 1, \"gender_Male\": 0,\n  \"InternetService_Fiber\": 1, \"InternetService_No\": 0,\n  \"Contract_OneYear\": 0, \"Contract_TwoYear\": 0,\n  \"PaymentMethod_CreditCard\": 0, \"PaymentMethod_ElecCheck\": 1,\n  \"PaymentMethod_MailedCheck\": 0\n}\n",
+        "label": "{\n  \"customerID\": \"TEST-001\",\n  \"tenure\": {{tenure}},\n  \"MonthlyCharges\": {{monthly_charges}},\n  \"TotalCharges\": {{total_charges}},\n  \"SeniorCitizen\": 0, \"Partner\": 0, \"Dependents\": 0,\n  \"PhoneService\": 1, \"MultipleLines\": 0,\n  \"OnlineSecurity\": 0, \"OnlineBackup\": 0, \"DeviceProtection\": 0,\n  \"TechSupport\": 0, \"StreamingTV\": 0, \"StreamingMovies\": 0,\n  \"PaperlessBilling\": 1, \"gender_Male\": 0,\n  \"InternetService_Fiber\": 1, \"InternetService_No\": 0,\n  \"Contract_OneYear\": 0, \"Contract_TwoYear\": 0,\n  \"PaymentMethod_CreditCard\": 0, \"PaymentMethod_ElecCheck\": 1,\n  \"PaymentMethod_MailedCheck\": 0\n}\n",
+        "provider": "http://localhost:8000/predict",
+        "metrics": {
+          "score": 0,
+          "testPassCount": 0,
+          "testFailCount": 5,
+          "testErrorCount": 0,
+          "assertPassCount": 0,
+          "assertFailCount": 8,
+          "totalLatencyMs": 58899,
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 5,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          },
+          "namedScores": {},
+          "namedScoresCount": {},
+          "namedScoreWeights": {},
+          "cost": 0
+        }
+      }
+    ],
+    "results": [
+      {
+        "cost": 0,
+        "error": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:53)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\n['HIGH', 'CRITICAL', 'MEDIUM'].includes(JSON.parse(output).risk_level)",
+        "gradingResult": {
+          "pass": false,
+          "score": 0,
+          "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:53)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\n['HIGH', 'CRITICAL', 'MEDIUM'].includes(JSON.parse(output).risk_level)",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:13)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nJSON.parse(output).churn_probability > 0.4",
+              "assertion": {
+                "type": "javascript",
+                "value": "JSON.parse(output).churn_probability > 0.4"
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:13)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nJSON.parse(output).customerID === 'TEST-001'",
+              "assertion": {
+                "type": "javascript",
+                "value": "JSON.parse(output).customerID === 'TEST-001'"
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:53)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\n['HIGH', 'CRITICAL', 'MEDIUM'].includes(JSON.parse(output).risk_level)",
+              "assertion": {
+                "type": "javascript",
+                "value": "['HIGH', 'CRITICAL', 'MEDIUM'].includes(JSON.parse(output).risk_level)"
+              }
+            }
+          ]
+        },
+        "id": "dfceca85-45e3-4981-8c93-01dae80af9fc",
+        "latencyMs": 14672,
+        "namedScores": {},
+        "prompt": {
+          "raw": "{\"customerID\":\"TEST-001\",\"tenure\":2,\"MonthlyCharges\":95.5,\"TotalCharges\":191,\"SeniorCitizen\":0,\"Partner\":0,\"Dependents\":0,\"PhoneService\":1,\"MultipleLines\":0,\"OnlineSecurity\":0,\"OnlineBackup\":0,\"DeviceProtection\":0,\"TechSupport\":0,\"StreamingTV\":0,\"StreamingMovies\":0,\"PaperlessBilling\":1,\"gender_Male\":0,\"InternetService_Fiber\":1,\"InternetService_No\":0,\"Contract_OneYear\":0,\"Contract_TwoYear\":0,\"PaymentMethod_CreditCard\":0,\"PaymentMethod_ElecCheck\":1,\"PaymentMethod_MailedCheck\":0}",
+          "label": "{\n  \"customerID\": \"TEST-001\",\n  \"tenure\": {{tenure}},\n  \"MonthlyCharges\": {{monthly_charges}},\n  \"TotalCharges\": {{total_charges}},\n  \"SeniorCitizen\": 0, \"Partner\": 0, \"Dependents\": 0,\n  \"PhoneService\": 1, \"MultipleLines\": 0,\n  \"OnlineSecurity\": 0, \"OnlineBackup\": 0, \"DeviceProtection\": 0,\n  \"TechSupport\": 0, \"StreamingTV\": 0, \"StreamingMovies\": 0,\n  \"PaperlessBilling\": 1, \"gender_Male\": 0,\n  \"InternetService_Fiber\": 1, \"InternetService_No\": 0,\n  \"Contract_OneYear\": 0, \"Contract_TwoYear\": 0,\n  \"PaymentMethod_CreditCard\": 0, \"PaymentMethod_ElecCheck\": 1,\n  \"PaymentMethod_MailedCheck\": 0\n}\n",
+          "config": {}
+        },
+        "promptId": "2ab5ec9b9df2b965342c831585267e0125f80163e44383e8bd4fcf4fbebd37c2",
+        "promptIdx": 0,
+        "provider": {
+          "id": "http://localhost:8000/predict",
+          "label": ""
+        },
+        "response": {
+          "raw": "{\"prediction_id\":\"f72c8507-b20c-4f88-bb9a-33ad7b354844\",\"customerID\":\"TEST-001\",\"churn_probability\":0.9734,\"churn_prediction\":1,\"churn_label\":\"Churn\",\"risk_level\":\"CRITICAL\",\"model_name\":\"local_churn_classifier\",\"model_version\":\"local\",\"prediction_timestamp\":\"2026-05-16T13:49:24.165076+00:00\",\"latency_ms\":131.288}",
+          "latencyMs": 14672,
+          "cached": true,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "315",
+                "content-type": "application/json",
+                "date": "Sat, 16 May 2026 13:49:09 GMT",
+                "server": "uvicorn"
+              }
+            }
+          },
+          "output": {
+            "prediction_id": "f72c8507-b20c-4f88-bb9a-33ad7b354844",
+            "customerID": "TEST-001",
+            "churn_probability": 0.9734,
+            "churn_prediction": 1,
+            "churn_label": "Churn",
+            "risk_level": "CRITICAL",
+            "model_name": "local_churn_classifier",
+            "model_version": "local",
+            "prediction_timestamp": "2026-05-16T13:49:24.165076+00:00",
+            "latency_ms": 131.288
+          },
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "description": "New Fiber optic customer (month-to-month) should be high risk",
+          "vars": {
+            "tenure": 2,
+            "monthly_charges": 95.5,
+            "total_charges": 191
+          },
+          "assert": [
+            {
+              "type": "javascript",
+              "value": "JSON.parse(output).churn_probability > 0.4"
+            },
+            {
+              "type": "javascript",
+              "value": "JSON.parse(output).customerID === 'TEST-001'"
+            },
+            {
+              "type": "javascript",
+              "value": "['HIGH', 'CRITICAL', 'MEDIUM'].includes(JSON.parse(output).risk_level)"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 0,
+        "vars": {
+          "tenure": 2,
+          "monthly_charges": 95.5,
+          "total_charges": 191
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "315",
+              "content-type": "application/json",
+              "date": "Sat, 16 May 2026 13:49:09 GMT",
+              "server": "uvicorn"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      {
+        "cost": 0,
+        "error": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:13)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nJSON.parse(output).churn_prediction === 0",
+        "gradingResult": {
+          "pass": false,
+          "score": 0,
+          "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:13)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nJSON.parse(output).churn_prediction === 0",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:13)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nJSON.parse(output).churn_probability < 0.5",
+              "assertion": {
+                "type": "javascript",
+                "value": "JSON.parse(output).churn_probability < 0.5"
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:13)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nJSON.parse(output).churn_prediction === 0",
+              "assertion": {
+                "type": "javascript",
+                "value": "JSON.parse(output).churn_prediction === 0"
+              }
+            }
+          ]
+        },
+        "id": "03f5b758-b88b-4ca8-aef1-38479eb5075a",
+        "latencyMs": 14919,
+        "namedScores": {},
+        "prompt": {
+          "raw": "{\"customerID\":\"TEST-001\",\"tenure\":60,\"MonthlyCharges\":55,\"TotalCharges\":3300,\"SeniorCitizen\":0,\"Partner\":0,\"Dependents\":0,\"PhoneService\":1,\"MultipleLines\":0,\"OnlineSecurity\":0,\"OnlineBackup\":0,\"DeviceProtection\":0,\"TechSupport\":0,\"StreamingTV\":0,\"StreamingMovies\":0,\"PaperlessBilling\":1,\"gender_Male\":0,\"InternetService_Fiber\":1,\"InternetService_No\":0,\"Contract_OneYear\":0,\"Contract_TwoYear\":0,\"PaymentMethod_CreditCard\":0,\"PaymentMethod_ElecCheck\":1,\"PaymentMethod_MailedCheck\":0}",
+          "label": "{\n  \"customerID\": \"TEST-001\",\n  \"tenure\": {{tenure}},\n  \"MonthlyCharges\": {{monthly_charges}},\n  \"TotalCharges\": {{total_charges}},\n  \"SeniorCitizen\": 0, \"Partner\": 0, \"Dependents\": 0,\n  \"PhoneService\": 1, \"MultipleLines\": 0,\n  \"OnlineSecurity\": 0, \"OnlineBackup\": 0, \"DeviceProtection\": 0,\n  \"TechSupport\": 0, \"StreamingTV\": 0, \"StreamingMovies\": 0,\n  \"PaperlessBilling\": 1, \"gender_Male\": 0,\n  \"InternetService_Fiber\": 1, \"InternetService_No\": 0,\n  \"Contract_OneYear\": 0, \"Contract_TwoYear\": 0,\n  \"PaymentMethod_CreditCard\": 0, \"PaymentMethod_ElecCheck\": 1,\n  \"PaymentMethod_MailedCheck\": 0\n}\n",
+          "config": {}
+        },
+        "promptId": "2ab5ec9b9df2b965342c831585267e0125f80163e44383e8bd4fcf4fbebd37c2",
+        "promptIdx": 0,
+        "provider": {
+          "id": "http://localhost:8000/predict",
+          "label": ""
+        },
+        "response": {
+          "raw": "{\"prediction_id\":\"6536b334-53d3-4a1b-9d7c-340c85d84e5d\",\"customerID\":\"TEST-001\",\"churn_probability\":0.5629,\"churn_prediction\":1,\"churn_label\":\"Churn\",\"risk_level\":\"HIGH\",\"model_name\":\"local_churn_classifier\",\"model_version\":\"local\",\"prediction_timestamp\":\"2026-05-16T13:49:24.451276+00:00\",\"latency_ms\":211.131}",
+          "latencyMs": 14919,
+          "cached": true,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "311",
+                "content-type": "application/json",
+                "date": "Sat, 16 May 2026 13:49:09 GMT",
+                "server": "uvicorn"
+              }
+            }
+          },
+          "output": {
+            "prediction_id": "6536b334-53d3-4a1b-9d7c-340c85d84e5d",
+            "customerID": "TEST-001",
+            "churn_probability": 0.5629,
+            "churn_prediction": 1,
+            "churn_label": "Churn",
+            "risk_level": "HIGH",
+            "model_name": "local_churn_classifier",
+            "model_version": "local",
+            "prediction_timestamp": "2026-05-16T13:49:24.451276+00:00",
+            "latency_ms": 211.131
+          },
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "description": "Long-term two-year contract customer should be low risk",
+          "vars": {
+            "tenure": 60,
+            "monthly_charges": 55,
+            "total_charges": 3300
+          },
+          "assert": [
+            {
+              "type": "javascript",
+              "value": "JSON.parse(output).churn_probability < 0.5"
+            },
+            {
+              "type": "javascript",
+              "value": "JSON.parse(output).churn_prediction === 0"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 1,
+        "vars": {
+          "tenure": 60,
+          "monthly_charges": 55,
+          "total_charges": 3300
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "311",
+              "content-type": "application/json",
+              "date": "Sat, 16 May 2026 13:49:09 GMT",
+              "server": "uvicorn"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      {
+        "cost": 0,
+        "error": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:16)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nconst r = JSON.parse(output);\nr.hasOwnProperty(\"prediction_id\") &&\nr.hasOwnProperty(\"churn_probability\") &&\nr.hasOwnProperty(\"churn_prediction\") &&\nr.hasOwnProperty(\"risk_level\") &&\nr.hasOwnProperty(\"model_name\") &&\nr.hasOwnProperty(\"latency_ms\")",
+        "gradingResult": {
+          "pass": false,
+          "score": 0,
+          "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:16)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nconst r = JSON.parse(output);\nr.hasOwnProperty(\"prediction_id\") &&\nr.hasOwnProperty(\"churn_probability\") &&\nr.hasOwnProperty(\"churn_prediction\") &&\nr.hasOwnProperty(\"risk_level\") &&\nr.hasOwnProperty(\"model_name\") &&\nr.hasOwnProperty(\"latency_ms\")",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:16)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nconst r = JSON.parse(output);\nr.hasOwnProperty(\"prediction_id\") &&\nr.hasOwnProperty(\"churn_probability\") &&\nr.hasOwnProperty(\"churn_prediction\") &&\nr.hasOwnProperty(\"risk_level\") &&\nr.hasOwnProperty(\"model_name\") &&\nr.hasOwnProperty(\"latency_ms\")",
+              "assertion": {
+                "type": "javascript",
+                "value": "const r = JSON.parse(output);\nr.hasOwnProperty(\"prediction_id\") &&\nr.hasOwnProperty(\"churn_probability\") &&\nr.hasOwnProperty(\"churn_prediction\") &&\nr.hasOwnProperty(\"risk_level\") &&\nr.hasOwnProperty(\"model_name\") &&\nr.hasOwnProperty(\"latency_ms\")\n"
+              }
+            }
+          ]
+        },
+        "id": "09ae603d-eb11-40bc-bdd3-c70e4d699ddf",
+        "latencyMs": 7936,
+        "namedScores": {},
+        "prompt": {
+          "raw": "{\"customerID\":\"TEST-001\",\"tenure\":12,\"MonthlyCharges\":70,\"TotalCharges\":840,\"SeniorCitizen\":0,\"Partner\":0,\"Dependents\":0,\"PhoneService\":1,\"MultipleLines\":0,\"OnlineSecurity\":0,\"OnlineBackup\":0,\"DeviceProtection\":0,\"TechSupport\":0,\"StreamingTV\":0,\"StreamingMovies\":0,\"PaperlessBilling\":1,\"gender_Male\":0,\"InternetService_Fiber\":1,\"InternetService_No\":0,\"Contract_OneYear\":0,\"Contract_TwoYear\":0,\"PaymentMethod_CreditCard\":0,\"PaymentMethod_ElecCheck\":1,\"PaymentMethod_MailedCheck\":0}",
+          "label": "{\n  \"customerID\": \"TEST-001\",\n  \"tenure\": {{tenure}},\n  \"MonthlyCharges\": {{monthly_charges}},\n  \"TotalCharges\": {{total_charges}},\n  \"SeniorCitizen\": 0, \"Partner\": 0, \"Dependents\": 0,\n  \"PhoneService\": 1, \"MultipleLines\": 0,\n  \"OnlineSecurity\": 0, \"OnlineBackup\": 0, \"DeviceProtection\": 0,\n  \"TechSupport\": 0, \"StreamingTV\": 0, \"StreamingMovies\": 0,\n  \"PaperlessBilling\": 1, \"gender_Male\": 0,\n  \"InternetService_Fiber\": 1, \"InternetService_No\": 0,\n  \"Contract_OneYear\": 0, \"Contract_TwoYear\": 0,\n  \"PaymentMethod_CreditCard\": 0, \"PaymentMethod_ElecCheck\": 1,\n  \"PaymentMethod_MailedCheck\": 0\n}\n",
+          "config": {}
+        },
+        "promptId": "2ab5ec9b9df2b965342c831585267e0125f80163e44383e8bd4fcf4fbebd37c2",
+        "promptIdx": 0,
+        "provider": {
+          "id": "http://localhost:8000/predict",
+          "label": ""
+        },
+        "response": {
+          "raw": "{\"prediction_id\":\"6eba2d54-60dc-4300-b0fa-d7deee85a456\",\"customerID\":\"TEST-001\",\"churn_probability\":0.8425,\"churn_prediction\":1,\"churn_label\":\"Churn\",\"risk_level\":\"CRITICAL\",\"model_name\":\"local_churn_classifier\",\"model_version\":\"local\",\"prediction_timestamp\":\"2026-05-16T13:49:17.390103+00:00\",\"latency_ms\":7394.926}",
+          "latencyMs": 7936,
+          "cached": true,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "316",
+                "content-type": "application/json",
+                "date": "Sat, 16 May 2026 13:49:09 GMT",
+                "server": "uvicorn"
+              }
+            }
+          },
+          "output": {
+            "prediction_id": "6eba2d54-60dc-4300-b0fa-d7deee85a456",
+            "customerID": "TEST-001",
+            "churn_probability": 0.8425,
+            "churn_prediction": 1,
+            "churn_label": "Churn",
+            "risk_level": "CRITICAL",
+            "model_name": "local_churn_classifier",
+            "model_version": "local",
+            "prediction_timestamp": "2026-05-16T13:49:17.390103+00:00",
+            "latency_ms": 7394.926
+          },
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "description": "API response must have all required fields",
+          "vars": {
+            "tenure": 12,
+            "monthly_charges": 70,
+            "total_charges": 840
+          },
+          "assert": [
+            {
+              "type": "javascript",
+              "value": "const r = JSON.parse(output);\nr.hasOwnProperty(\"prediction_id\") &&\nr.hasOwnProperty(\"churn_probability\") &&\nr.hasOwnProperty(\"churn_prediction\") &&\nr.hasOwnProperty(\"risk_level\") &&\nr.hasOwnProperty(\"model_name\") &&\nr.hasOwnProperty(\"latency_ms\")\n"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 2,
+        "vars": {
+          "tenure": 12,
+          "monthly_charges": 70,
+          "total_charges": 840
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "316",
+              "content-type": "application/json",
+              "date": "Sat, 16 May 2026 13:49:09 GMT",
+              "server": "uvicorn"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      {
+        "cost": 0,
+        "error": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:16)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nconst p = JSON.parse(output).churn_probability;\np >= 0.0 && p <= 1.0",
+        "gradingResult": {
+          "pass": false,
+          "score": 0,
+          "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:16)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nconst p = JSON.parse(output).churn_probability;\np >= 0.0 && p <= 1.0",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:16)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nconst p = JSON.parse(output).churn_probability;\np >= 0.0 && p <= 1.0",
+              "assertion": {
+                "type": "javascript",
+                "value": "const p = JSON.parse(output).churn_probability;\np >= 0.0 && p <= 1.0\n"
+              }
+            }
+          ]
+        },
+        "id": "12535da9-67ef-44e9-8310-69ac3192d03b",
+        "latencyMs": 14477,
+        "namedScores": {},
+        "prompt": {
+          "raw": "{\"customerID\":\"TEST-001\",\"tenure\":5,\"MonthlyCharges\":80,\"TotalCharges\":400,\"SeniorCitizen\":0,\"Partner\":0,\"Dependents\":0,\"PhoneService\":1,\"MultipleLines\":0,\"OnlineSecurity\":0,\"OnlineBackup\":0,\"DeviceProtection\":0,\"TechSupport\":0,\"StreamingTV\":0,\"StreamingMovies\":0,\"PaperlessBilling\":1,\"gender_Male\":0,\"InternetService_Fiber\":1,\"InternetService_No\":0,\"Contract_OneYear\":0,\"Contract_TwoYear\":0,\"PaymentMethod_CreditCard\":0,\"PaymentMethod_ElecCheck\":1,\"PaymentMethod_MailedCheck\":0}",
+          "label": "{\n  \"customerID\": \"TEST-001\",\n  \"tenure\": {{tenure}},\n  \"MonthlyCharges\": {{monthly_charges}},\n  \"TotalCharges\": {{total_charges}},\n  \"SeniorCitizen\": 0, \"Partner\": 0, \"Dependents\": 0,\n  \"PhoneService\": 1, \"MultipleLines\": 0,\n  \"OnlineSecurity\": 0, \"OnlineBackup\": 0, \"DeviceProtection\": 0,\n  \"TechSupport\": 0, \"StreamingTV\": 0, \"StreamingMovies\": 0,\n  \"PaperlessBilling\": 1, \"gender_Male\": 0,\n  \"InternetService_Fiber\": 1, \"InternetService_No\": 0,\n  \"Contract_OneYear\": 0, \"Contract_TwoYear\": 0,\n  \"PaymentMethod_CreditCard\": 0, \"PaymentMethod_ElecCheck\": 1,\n  \"PaymentMethod_MailedCheck\": 0\n}\n",
+          "config": {}
+        },
+        "promptId": "2ab5ec9b9df2b965342c831585267e0125f80163e44383e8bd4fcf4fbebd37c2",
+        "promptIdx": 0,
+        "provider": {
+          "id": "http://localhost:8000/predict",
+          "label": ""
+        },
+        "response": {
+          "raw": "{\"prediction_id\":\"0a4dad91-79f7-4fae-98e8-e5cb30892ac5\",\"customerID\":\"TEST-001\",\"churn_probability\":0.9313,\"churn_prediction\":1,\"churn_label\":\"Churn\",\"risk_level\":\"CRITICAL\",\"model_name\":\"local_churn_classifier\",\"model_version\":\"local\",\"prediction_timestamp\":\"2026-05-16T13:49:23.960496+00:00\",\"latency_ms\":285.529}",
+          "latencyMs": 14477,
+          "cached": true,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "315",
+                "content-type": "application/json",
+                "date": "Sat, 16 May 2026 13:49:09 GMT",
+                "server": "uvicorn"
+              }
+            }
+          },
+          "output": {
+            "prediction_id": "0a4dad91-79f7-4fae-98e8-e5cb30892ac5",
+            "customerID": "TEST-001",
+            "churn_probability": 0.9313,
+            "churn_prediction": 1,
+            "churn_label": "Churn",
+            "risk_level": "CRITICAL",
+            "model_name": "local_churn_classifier",
+            "model_version": "local",
+            "prediction_timestamp": "2026-05-16T13:49:23.960496+00:00",
+            "latency_ms": 285.529
+          },
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "description": "Churn probability must be between 0 and 1",
+          "vars": {
+            "tenure": 5,
+            "monthly_charges": 80,
+            "total_charges": 400
+          },
+          "assert": [
+            {
+              "type": "javascript",
+              "value": "const p = JSON.parse(output).churn_probability;\np >= 0.0 && p <= 1.0\n"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 3,
+        "vars": {
+          "tenure": 5,
+          "monthly_charges": 80,
+          "total_charges": 400
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "315",
+              "content-type": "application/json",
+              "date": "Sat, 16 May 2026 13:49:09 GMT",
+              "server": "uvicorn"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      {
+        "cost": 0,
+        "error": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:13)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nJSON.parse(output).churn_probability > 0.3",
+        "gradingResult": {
+          "pass": false,
+          "score": 0,
+          "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:13)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nJSON.parse(output).churn_probability > 0.3",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function threw error: \"[object Object]\" is not valid JSON\nStack Trace: SyntaxError: \"[object Object]\" is not valid JSON\n    at JSON.parse (<anonymous>)\n    at eval (eval at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:34), <anonymous>:3:13)\n    at handleJavascript (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:2038:92)\n    at runAssertion (file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4727:24)\n    at file:///C:/Users/spurt/AppData/Local/npm-cache/_npx/1ddbeaccabfe00a4/node_modules/promptfoo/dist/src/evaluator-DbOsHSRe.js:4826:24\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:151:38\n    at replenish (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:447:21)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:452:13\n    at Object.eachOfLimit (C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:478:36)\n    at C:\\Users\\spurt\\AppData\\Local\\npm-cache\\_npx\\1ddbeaccabfe00a4\\node_modules\\async\\dist\\async.js:220:25\nJSON.parse(output).churn_probability > 0.3",
+              "assertion": {
+                "type": "javascript",
+                "value": "JSON.parse(output).churn_probability > 0.3"
+              }
+            }
+          ]
+        },
+        "id": "ee56fb80-6e03-4360-9649-d540b0fbdd5d",
+        "latencyMs": 6895,
+        "namedScores": {},
+        "prompt": {
+          "raw": "{\"customerID\":\"TEST-001\",\"tenure\":3,\"MonthlyCharges\":99,\"TotalCharges\":297,\"SeniorCitizen\":0,\"Partner\":0,\"Dependents\":0,\"PhoneService\":1,\"MultipleLines\":0,\"OnlineSecurity\":0,\"OnlineBackup\":0,\"DeviceProtection\":0,\"TechSupport\":0,\"StreamingTV\":0,\"StreamingMovies\":0,\"PaperlessBilling\":1,\"gender_Male\":0,\"InternetService_Fiber\":1,\"InternetService_No\":0,\"Contract_OneYear\":0,\"Contract_TwoYear\":0,\"PaymentMethod_CreditCard\":0,\"PaymentMethod_ElecCheck\":1,\"PaymentMethod_MailedCheck\":0}",
+          "label": "{\n  \"customerID\": \"TEST-001\",\n  \"tenure\": {{tenure}},\n  \"MonthlyCharges\": {{monthly_charges}},\n  \"TotalCharges\": {{total_charges}},\n  \"SeniorCitizen\": 0, \"Partner\": 0, \"Dependents\": 0,\n  \"PhoneService\": 1, \"MultipleLines\": 0,\n  \"OnlineSecurity\": 0, \"OnlineBackup\": 0, \"DeviceProtection\": 0,\n  \"TechSupport\": 0, \"StreamingTV\": 0, \"StreamingMovies\": 0,\n  \"PaperlessBilling\": 1, \"gender_Male\": 0,\n  \"InternetService_Fiber\": 1, \"InternetService_No\": 0,\n  \"Contract_OneYear\": 0, \"Contract_TwoYear\": 0,\n  \"PaymentMethod_CreditCard\": 0, \"PaymentMethod_ElecCheck\": 1,\n  \"PaymentMethod_MailedCheck\": 0\n}\n",
+          "config": {}
+        },
+        "promptId": "2ab5ec9b9df2b965342c831585267e0125f80163e44383e8bd4fcf4fbebd37c2",
+        "promptIdx": 0,
+        "provider": {
+          "id": "http://localhost:8000/predict",
+          "label": ""
+        },
+        "response": {
+          "raw": "{\"prediction_id\":\"afa39a04-4d5a-4579-8a9c-d37caceee6b4\",\"customerID\":\"TEST-001\",\"churn_probability\":0.9719,\"churn_prediction\":1,\"churn_label\":\"Churn\",\"risk_level\":\"CRITICAL\",\"model_name\":\"local_churn_classifier\",\"model_version\":\"local\",\"prediction_timestamp\":\"2026-05-16T13:49:24.639559+00:00\",\"latency_ms\":105.178}",
+          "latencyMs": 6895,
+          "cached": true,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "315",
+                "content-type": "application/json",
+                "date": "Sat, 16 May 2026 13:49:09 GMT",
+                "server": "uvicorn"
+              }
+            }
+          },
+          "output": {
+            "prediction_id": "afa39a04-4d5a-4579-8a9c-d37caceee6b4",
+            "customerID": "TEST-001",
+            "churn_probability": 0.9719,
+            "churn_prediction": 1,
+            "churn_label": "Churn",
+            "risk_level": "CRITICAL",
+            "model_name": "local_churn_classifier",
+            "model_version": "local",
+            "prediction_timestamp": "2026-05-16T13:49:24.639559+00:00",
+            "latency_ms": 105.178
+          },
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "description": "Senior citizen with month-to-month high charges should be flagged",
+          "vars": {
+            "tenure": 3,
+            "monthly_charges": 99,
+            "total_charges": 297
+          },
+          "assert": [
+            {
+              "type": "javascript",
+              "value": "JSON.parse(output).churn_probability > 0.3"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 4,
+        "vars": {
+          "tenure": 3,
+          "monthly_charges": 99,
+          "total_charges": 297
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "315",
+              "content-type": "application/json",
+              "date": "Sat, 16 May 2026 13:49:09 GMT",
+              "server": "uvicorn"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      }
+    ],
+    "stats": {
+      "successes": 0,
+      "failures": 5,
+      "errors": 0,
+      "tokenUsage": {
+        "prompt": 0,
+        "completion": 0,
+        "cached": 0,
+        "total": 0,
+        "numRequests": 5,
+        "completionDetails": {
+          "reasoning": 0,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      },
+      "durationMs": 651,
+      "evaluationDurationMs": 651
+    }
+  },
+  "config": {
+    "tags": {},
+    "description": "Promptfoo evaluation for Telco Churn Prediction API",
+    "prompts": [
+      "{\n  \"customerID\": \"TEST-001\",\n  \"tenure\": {{tenure}},\n  \"MonthlyCharges\": {{monthly_charges}},\n  \"TotalCharges\": {{total_charges}},\n  \"SeniorCitizen\": 0, \"Partner\": 0, \"Dependents\": 0,\n  \"PhoneService\": 1, \"MultipleLines\": 0,\n  \"OnlineSecurity\": 0, \"OnlineBackup\": 0, \"DeviceProtection\": 0,\n  \"TechSupport\": 0, \"StreamingTV\": 0, \"StreamingMovies\": 0,\n  \"PaperlessBilling\": 1, \"gender_Male\": 0,\n  \"InternetService_Fiber\": 1, \"InternetService_No\": 0,\n  \"Contract_OneYear\": 0, \"Contract_TwoYear\": 0,\n  \"PaymentMethod_CreditCard\": 0, \"PaymentMethod_ElecCheck\": 1,\n  \"PaymentMethod_MailedCheck\": 0\n}\n"
+    ],
+    "providers": [
+      {
+        "id": "http",
+        "config": {
+          "url": "http://localhost:8000/predict",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": "{{prompt}}"
+        }
+      }
+    ],
+    "tests": [
+      {
+        "description": "New Fiber optic customer (month-to-month) should be high risk",
+        "vars": {
+          "tenure": 2,
+          "monthly_charges": 95.5,
+          "total_charges": 191
+        },
+        "assert": [
+          {
+            "type": "javascript",
+            "value": "JSON.parse(output).churn_probability > 0.4"
+          },
+          {
+            "type": "javascript",
+            "value": "JSON.parse(output).customerID === 'TEST-001'"
+          },
+          {
+            "type": "javascript",
+            "value": "['HIGH', 'CRITICAL', 'MEDIUM'].includes(JSON.parse(output).risk_level)"
+          }
+        ]
+      },
+      {
+        "description": "Long-term two-year contract customer should be low risk",
+        "vars": {
+          "tenure": 60,
+          "monthly_charges": 55,
+          "total_charges": 3300
+        },
+        "assert": [
+          {
+            "type": "javascript",
+            "value": "JSON.parse(output).churn_probability < 0.5"
+          },
+          {
+            "type": "javascript",
+            "value": "JSON.parse(output).churn_prediction === 0"
+          }
+        ]
+      },
+      {
+        "description": "API response must have all required fields",
+        "vars": {
+          "tenure": 12,
+          "monthly_charges": 70,
+          "total_charges": 840
+        },
+        "assert": [
+          {
+            "type": "javascript",
+            "value": "const r = JSON.parse(output);\nr.hasOwnProperty(\"prediction_id\") &&\nr.hasOwnProperty(\"churn_probability\") &&\nr.hasOwnProperty(\"churn_prediction\") &&\nr.hasOwnProperty(\"risk_level\") &&\nr.hasOwnProperty(\"model_name\") &&\nr.hasOwnProperty(\"latency_ms\")\n"
+          }
+        ]
+      },
+      {
+        "description": "Churn probability must be between 0 and 1",
+        "vars": {
+          "tenure": 5,
+          "monthly_charges": 80,
+          "total_charges": 400
+        },
+        "assert": [
+          {
+            "type": "javascript",
+            "value": "const p = JSON.parse(output).churn_probability;\np >= 0.0 && p <= 1.0\n"
+          }
+        ]
+      },
+      {
+        "description": "Senior citizen with month-to-month high charges should be flagged",
+        "vars": {
+          "tenure": 3,
+          "monthly_charges": 99,
+          "total_charges": 297
+        },
+        "assert": [
+          {
+            "type": "javascript",
+            "value": "JSON.parse(output).churn_probability > 0.3"
+          }
+        ]
+      }
+    ],
+    "scenarios": [],
+    "env": {},
+    "outputPath": [
+      "promptfoo/results.json"
+    ],
+    "extensions": [],
+    "metadata": {},
+    "evaluateOptions": {}
+  },
+  "shareableUrl": null,
+  "metadata": {
+    "promptfooVersion": "0.121.11",
+    "nodeVersion": "v24.15.0",
+    "platform": "win32",
+    "arch": "x64",
+    "exportedAt": "2026-05-16T13:50:03.818Z",
+    "evaluationCreatedAt": "2026-05-16T13:50:02.867Z"
+  }
+}

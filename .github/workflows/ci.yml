@@ -205,13 +205,20 @@ jobs:
 
       - name: Update K8s image tags
         run: |
-          API_TAG="${{ steps.meta-api.outputs.tags }}"
-          sed -i "s|image: .*churn-api.*|image: ${API_TAG}|g" k8s/api-deployment.yaml
+          API_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/churn-api:sha-${{ github.sha }}"
+          FE_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/churn-frontend:sha-${{ github.sha }}"
+          
+          # Update API deployment
+          sed -i "s|image: .*churn-api.*|image: ${API_IMAGE}|g" k8s/api-deployment.yaml
+          
+          # Update Frontend deployment
+          sed -i "s|image: .*churn-frontend.*|image: ${FE_IMAGE}|g" k8s/frontend-deployment.yaml
+          
+          # Commit and push changes
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add k8s/api-deployment.yaml
-          git diff --staged --quiet || git commit -m "ci: update API image tag to ${{ github.sha }}"
-          git push
+          git add k8s/*.yaml
+          git diff --staged --quiet || (git commit -m "ci: update image tags to sha-${{ github.sha }}" && git push)
 
   # ─── Promptfoo Evaluation ────────────────────────────────────────────────────
   promptfoo-eval:

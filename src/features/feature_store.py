@@ -74,8 +74,11 @@ def create_feature_repo() -> None:
         "registry": "data/registry.db",
         "provider": "local",
         "online_store": {
-            "type": "sqlite",
-            "path": "data/online_store.db"
+            "type": "redis",
+            "redis_type": "redis",
+            "host": os.getenv("REDIS_HOST", "localhost"),
+            "port": int(os.getenv("REDIS_PORT", 6379)),
+            "db": 0
         },
         "offline_store": {
             "type": "file"
@@ -210,4 +213,5 @@ if __name__ == "__main__":
     params = load_params()
     prepare_feature_data()
     create_feature_repo()
-    logger.success("Feature store setup complete!")
+    materialize_features()
+    logger.success("Feature store setup and materialization complete!")

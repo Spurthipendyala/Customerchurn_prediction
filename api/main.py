@@ -15,13 +15,15 @@ import pandas as pd
 import numpy as np
 import mlflow
 import mlflow.pyfunc
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Request, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
 from pydantic import BaseModel, Field
 from loguru import logger
 from dotenv import load_dotenv
+from feast import FeatureStore
+from src.monitoring.retraining_trigger import trigger_retraining
 
 load_dotenv()
 
@@ -65,29 +67,29 @@ DATA_DRIFT_SCORE = Gauge("churn_drift_score", "Latest data drift score")
 # ── Pydantic Schemas ──────────────────────────────────────────────────────────
 class CustomerFeatures(BaseModel):
     customerID: str = Field(..., example="7590-VHVEG")
-    tenure: int = Field(..., ge=0, le=120, example=12)
-    MonthlyCharges: float = Field(..., ge=0, le=200, example=65.5)
-    TotalCharges: float = Field(..., ge=0, example=786.0)
-    SeniorCitizen: int = Field(..., ge=0, le=1, example=0)
-    Partner: int = Field(..., ge=0, le=1, example=1)
-    Dependents: int = Field(..., ge=0, le=1, example=0)
-    PhoneService: int = Field(..., ge=0, le=1, example=1)
-    MultipleLines: int = Field(..., ge=0, le=1, example=0)
-    OnlineSecurity: int = Field(..., ge=0, le=1, example=0)
-    OnlineBackup: int = Field(..., ge=0, le=1, example=1)
-    DeviceProtection: int = Field(..., ge=0, le=1, example=0)
-    TechSupport: int = Field(..., ge=0, le=1, example=0)
-    StreamingTV: int = Field(..., ge=0, le=1, example=0)
-    StreamingMovies: int = Field(..., ge=0, le=1, example=0)
-    PaperlessBilling: int = Field(..., ge=0, le=1, example=1)
-    gender_Male: int = Field(..., ge=0, le=1, example=0)
-    InternetService_Fiber: int = Field(..., ge=0, le=1, example=0)
-    InternetService_No: int = Field(..., ge=0, le=1, example=0)
-    Contract_OneYear: int = Field(..., ge=0, le=1, example=0)
-    Contract_TwoYear: int = Field(..., ge=0, le=1, example=0)
-    PaymentMethod_CreditCard: int = Field(..., ge=0, le=1, example=0)
-    PaymentMethod_ElecCheck: int = Field(..., ge=0, le=1, example=1)
-    PaymentMethod_MailedCheck: int = Field(..., ge=0, le=1, example=0)
+    tenure: Optional[int] = Field(None, ge=0, le=120, example=12)
+    MonthlyCharges: Optional[float] = Field(None, ge=0, le=200, example=65.5)
+    TotalCharges: Optional[float] = Field(None, ge=0, example=786.0)
+    SeniorCitizen: Optional[int] = Field(None, ge=0, le=1, example=0)
+    Partner: Optional[int] = Field(None, ge=0, le=1, example=1)
+    Dependents: Optional[int] = Field(None, ge=0, le=1, example=0)
+    PhoneService: Optional[int] = Field(None, ge=0, le=1, example=1)
+    MultipleLines: Optional[int] = Field(None, ge=0, le=1, example=0)
+    OnlineSecurity: Optional[int] = Field(None, ge=0, le=1, example=0)
+    OnlineBackup: Optional[int] = Field(None, ge=0, le=1, example=1)
+    DeviceProtection: Optional[int] = Field(None, ge=0, le=1, example=0)
+    TechSupport: Optional[int] = Field(None, ge=0, le=1, example=0)
+    StreamingTV: Optional[int] = Field(None, ge=0, le=1, example=0)
+    StreamingMovies: Optional[int] = Field(None, ge=0, le=1, example=0)
+    PaperlessBilling: Optional[int] = Field(None, ge=0, le=1, example=1)
+    gender_Male: Optional[int] = Field(None, ge=0, le=1, example=0)
+    InternetService_Fiber: Optional[int] = Field(None, ge=0, le=1, example=0)
+    InternetService_No: Optional[int] = Field(None, ge=0, le=1, example=0)
+    Contract_OneYear: Optional[int] = Field(None, ge=0, le=1, example=0)
+    Contract_TwoYear: Optional[int] = Field(None, ge=0, le=1, example=0)
+    PaymentMethod_CreditCard: Optional[int] = Field(None, ge=0, le=1, example=0)
+    PaymentMethod_ElecCheck: Optional[int] = Field(None, ge=0, le=1, example=1)
+    PaymentMethod_MailedCheck: Optional[int] = Field(None, ge=0, le=1, example=0)
     charges_per_month: Optional[float] = Field(None, example=65.5)
     has_internet: Optional[int] = Field(None, ge=0, le=1, example=1)
     num_services: Optional[int] = Field(None, ge=0, le=10, example=2)
@@ -153,6 +155,7 @@ class ModelState:
     model_version: str = "0"
     feature_cols: List[str] = []
     load_time: float = time.time()
+    fs: Optional[FeatureStore] = None
 
     @classmethod
     def load(cls) -> None:
@@ -160,6 +163,14 @@ class ModelState:
         mlflow.set_tracking_uri(tracking_uri)
         model_name = os.getenv("MLFLOW_REGISTERED_MODEL_NAME", "churn_classifier")
         model_stage = os.getenv("MODEL_STAGE", "Production")
+
+        # Initialize Feast
+        try:
+            repo_path = os.getenv("FEAST_REPO_PATH", "src/features/feature_repo")
+            cls.fs = FeatureStore(repo_path=repo_path)
+            logger.success("✅ Feast Feature Store initialized")
+        except Exception as e:
+            logger.warning(f"⚠️  Feast initialization failed: {e}")
 
         # Try MLflow registry first
         try:
@@ -293,6 +304,60 @@ async def predict(
     start = time.perf_counter()
 
     try:
+        # Check if we need to fetch features from Feast
+        # We fetch from Feast if only customerID is provided (most other fields are None)
+        input_data = customer.model_dump()
+        filled_fields = [k for k, v in input_data.items() if v is not None and k != "customerID"]
+        
+        if len(filled_fields) == 0 and ModelState.fs:
+            logger.info(f"🔍 Fetching features from Feast for customer: {customer.customerID}")
+            try:
+                feature_vector = ModelState.fs.get_online_features(
+                    features=[
+                        "customer_demographics:tenure",
+                        "customer_demographics:SeniorCitizen",
+                        "customer_demographics:Partner",
+                        "customer_demographics:Dependents",
+                        "customer_demographics:gender_Male",
+                        "customer_demographics:tenure_group",
+                        "customer_services:PhoneService",
+                        "customer_services:MultipleLines",
+                        "customer_services:InternetService_Fiber",
+                        "customer_services:InternetService_No",
+                        "customer_services:OnlineSecurity",
+                        "customer_services:OnlineBackup",
+                        "customer_services:DeviceProtection",
+                        "customer_services:TechSupport",
+                        "customer_services:StreamingTV",
+                        "customer_services:StreamingMovies",
+                        "customer_services:has_internet",
+                        "customer_services:num_services",
+                        "customer_billing:MonthlyCharges",
+                        "customer_billing:TotalCharges",
+                        "customer_billing:charges_per_month",
+                        "customer_billing:PaperlessBilling",
+                        "customer_billing:Contract_OneYear",
+                        "customer_billing:Contract_TwoYear",
+                        "customer_billing:PaymentMethod_CreditCard",
+                        "customer_billing:PaymentMethod_ElecCheck",
+                        "customer_billing:PaymentMethod_MailedCheck",
+                    ],
+                    entity_rows=[{"customerID": customer.customerID}]
+                ).to_dict()
+                
+                # Update input data with fetched features
+                for k, v in feature_vector.items():
+                    # Feast returns feature names as 'view:feature' or just 'feature'
+                    feat_name = k.split(":")[-1] if ":" in k else k
+                    if feat_name in input_data:
+                        input_data[feat_name] = v[0]
+                
+                # Re-create customer object with filled features
+                customer = CustomerFeatures(**input_data)
+            except Exception as e:
+                logger.error(f"❌ Feast fetch failed: {e}")
+                raise HTTPException(status_code=500, detail=f"Feast fetch failed: {e}")
+
         df = customer_to_features(customer, ModelState.feature_cols)
         proba = float(ModelState.model.predict_proba(df)[0][1])
         pred = int(proba >= 0.5)
@@ -413,3 +478,11 @@ async def get_prediction_history(limit: int = 50):
     except Exception as e:
         logger.error(f"Failed to fetch history: {e}")
         return []
+
+
+@app.post("/retrain", tags=["Model"])
+async def manual_retrain(background_tasks: BackgroundTasks):
+    """Manually trigger model retraining pipeline."""
+    logger.info("🖱️  Manual retraining requested via API")
+    background_tasks.add_task(trigger_retraining, reason="Manual trigger via API")
+    return {"message": "Retraining pipeline triggered in background."}

@@ -87,5 +87,6 @@ api:
 # ─── Monitoring ────────────────────────────────────────────────────────────────
 monitoring:
   drift_threshold: 0.2
+  auto_retrain: true
   report_path: artifacts/drift_reports
   reference_size: 1000

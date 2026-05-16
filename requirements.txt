@@ -19,6 +19,8 @@ great-expectations==0.18.15
 
 # ─── Feast Feature Store ───────────────────────────────────────────────────────
 feast==0.40.0
+redis==5.0.4
+# feast[redis] is included in the core feast but we'll ensure redis is here
 
 # ─── OpenLineage ───────────────────────────────────────────────────────────────
 openlineage-python==1.18.0

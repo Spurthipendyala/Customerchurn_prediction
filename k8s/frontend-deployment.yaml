@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: churn-frontend
-          image: churn-frontend:v1
+          image: ghcr.io/spurthipendyala/customerchurn_prediction/churn-frontend:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

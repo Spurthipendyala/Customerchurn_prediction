@@ -35,11 +35,11 @@ tests:
       total_charges: 191.0
     assert:
       - type: javascript
-        value: JSON.parse(output).churn_probability > 0.4
+        value: "JSON.parse(output).churn_probability > 0.4"
       - type: javascript
-        value: JSON.parse(output).customerID === "TEST-001"
+        value: "JSON.parse(output).customerID === 'TEST-001'"
       - type: javascript
-        value: ["HIGH", "CRITICAL", "MEDIUM"].includes(JSON.parse(output).risk_level)
+        value: "['HIGH', 'CRITICAL', 'MEDIUM'].includes(JSON.parse(output).risk_level)"
 
   - description: "Long-term two-year contract customer should be low risk"
     vars:
@@ -48,9 +48,9 @@ tests:
       total_charges: 3300.0
     assert:
       - type: javascript
-        value: JSON.parse(output).churn_probability < 0.5
+        value: "JSON.parse(output).churn_probability < 0.5"
       - type: javascript
-        value: JSON.parse(output).churn_prediction === 0
+        value: "JSON.parse(output).churn_prediction === 0"
 
   - description: "API response must have all required fields"
     vars:
@@ -86,6 +86,6 @@ tests:
       total_charges: 297.0
     assert:
       - type: javascript
-        value: JSON.parse(output).churn_probability > 0.3
+        value: "JSON.parse(output).churn_probability > 0.3"
 
 outputPath: promptfoo/results.json

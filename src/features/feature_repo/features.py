@@ -3,7 +3,7 @@ Feast feature definitions for Telco Churn prediction.
 """
 from datetime import timedelta
 from feast import Entity, FeatureView, Field, FileSource, FeatureService
-from feast.types import String, Int32, Int8, Float64
+from feast.types import String, Int32, Float64
 
 # ─── Entity ──────────────────────────────────────────────────────────────────
 customer = Entity(
@@ -15,7 +15,7 @@ customer = Entity(
 # ─── Data Source ─────────────────────────────────────────────────────────────
 churn_source = FileSource(
     path="data/churn_features.parquet",
-    event_timestamp_column="event_timestamp",
+    timestamp_field="event_timestamp",
     created_timestamp_column="created_timestamp",
 )
 
@@ -26,10 +26,10 @@ customer_demographics = FeatureView(
     ttl=timedelta(days=365),
     schema=[
         Field(name="tenure",        dtype=Int32),
-        Field(name="SeniorCitizen", dtype=Int8),
-        Field(name="Partner",       dtype=Int8),
-        Field(name="Dependents",    dtype=Int8),
-        Field(name="gender_Male",   dtype=Int8),
+        Field(name="SeniorCitizen", dtype=Int32),
+        Field(name="Partner",       dtype=Int32),
+        Field(name="Dependents",    dtype=Int32),
+        Field(name="gender_Male",   dtype=Int32),
         Field(name="tenure_group",  dtype=String),
     ],
     source=churn_source,
@@ -43,18 +43,18 @@ customer_services = FeatureView(
     entities=[customer],
     ttl=timedelta(days=365),
     schema=[
-        Field(name="PhoneService",          dtype=Int8),
-        Field(name="MultipleLines",         dtype=Int8),
-        Field(name="InternetService_Fiber", dtype=Int8),
-        Field(name="InternetService_No",    dtype=Int8),
-        Field(name="OnlineSecurity",        dtype=Int8),
-        Field(name="OnlineBackup",          dtype=Int8),
-        Field(name="DeviceProtection",      dtype=Int8),
-        Field(name="TechSupport",           dtype=Int8),
-        Field(name="StreamingTV",           dtype=Int8),
-        Field(name="StreamingMovies",       dtype=Int8),
-        Field(name="has_internet",          dtype=Int8),
-        Field(name="num_services",          dtype=Int8),
+        Field(name="PhoneService",          dtype=Int32),
+        Field(name="MultipleLines",         dtype=Int32),
+        Field(name="InternetService_Fiber", dtype=Int32),
+        Field(name="InternetService_No",    dtype=Int32),
+        Field(name="OnlineSecurity",        dtype=Int32),
+        Field(name="OnlineBackup",          dtype=Int32),
+        Field(name="DeviceProtection",      dtype=Int32),
+        Field(name="TechSupport",           dtype=Int32),
+        Field(name="StreamingTV",           dtype=Int32),
+        Field(name="StreamingMovies",       dtype=Int32),
+        Field(name="has_internet",          dtype=Int32),
+        Field(name="num_services",          dtype=Int32),
     ],
     source=churn_source,
     description="Customer service subscription features",
@@ -70,12 +70,12 @@ customer_billing = FeatureView(
         Field(name="MonthlyCharges",             dtype=Float64),
         Field(name="TotalCharges",               dtype=Float64),
         Field(name="charges_per_month",          dtype=Float64),
-        Field(name="PaperlessBilling",           dtype=Int8),
-        Field(name="Contract_OneYear",           dtype=Int8),
-        Field(name="Contract_TwoYear",           dtype=Int8),
-        Field(name="PaymentMethod_CreditCard",   dtype=Int8),
-        Field(name="PaymentMethod_ElecCheck",    dtype=Int8),
-        Field(name="PaymentMethod_MailedCheck",  dtype=Int8),
+        Field(name="PaperlessBilling",           dtype=Int32),
+        Field(name="Contract_OneYear",           dtype=Int32),
+        Field(name="Contract_TwoYear",           dtype=Int32),
+        Field(name="PaymentMethod_CreditCard",   dtype=Int32),
+        Field(name="PaymentMethod_ElecCheck",    dtype=Int32),
+        Field(name="PaymentMethod_MailedCheck",  dtype=Int32),
     ],
     source=churn_source,
     description="Customer billing and contract features",

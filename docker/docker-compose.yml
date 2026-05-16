@@ -181,12 +181,28 @@ services:
       - churn_net
     restart: unless-stopped
 
+  # ─── Redis (Feast Online Store) ──────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: churn_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - churn_net
+    restart: unless-stopped
+
 volumes:
   clickhouse_data:
   marquez_db_data:
   mlflow_data:
   prometheus_data:
   grafana_data:
+  redis_data:
 
 networks:
   churn_net:

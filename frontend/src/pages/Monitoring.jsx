@@ -27,10 +27,21 @@ export default function Monitoring() {
       {drift && (
         <div style={{ background: drift.drift_detected ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)', border: `1px solid ${drift.drift_detected ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, borderRadius: 16, padding: '20px 24px', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{ fontSize: 36 }}>{drift.drift_detected ? '🚨' : '✅'}</div>
-          <div>
+          <div style={{ flex: 1 }}>
             <div style={{ fontWeight: 700, fontSize: 18, color: drift.drift_detected ? '#ef4444' : '#10b981' }}>{drift.drift_detected ? 'Data Drift Detected!' : 'No Significant Data Drift'}</div>
             <div style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 4 }}>Drift score: {drift.drift_score} | Threshold: {drift.drift_threshold}</div>
           </div>
+          <button 
+            onClick={() => {
+              fetch(`${API_URL}/retrain`, { method: 'POST' })
+                .then(() => alert('🚀 Retraining pipeline triggered!'))
+                .catch(e => alert('❌ Failed to trigger retraining'));
+            }}
+            className="btn btn-primary"
+            style={{ background: drift.drift_detected ? '#ef4444' : '#10b981' }}
+          >
+            Retrain Now
+          </button>
         </div>
       )}
 
