@@ -1,0 +1,22 @@
+{
+  "TotalCharges": 988,
+  "MonthlyCharges": 907,
+  "charges_per_month": 898,
+  "tenure": 727,
+  "OnlineSecurity": 173,
+  "num_services": 167,
+  "OnlineBackup": 159,
+  "TechSupport": 151,
+  "PaymentMethod_ElecCheck": 151,
+  "StreamingMovies": 120,
+  "PaperlessBilling": 119,
+  "gender_Male": 116,
+  "StreamingTV": 109,
+  "DeviceProtection": 106,
+  "PaymentMethod_CreditCard": 104,
+  "Contract_OneYear": 99,
+  "PhoneService": 85,
+  "PaymentMethod_MailedCheck": 84,
+  "SeniorCitizen": 83,
+  "Contract_TwoYear": 83
+}

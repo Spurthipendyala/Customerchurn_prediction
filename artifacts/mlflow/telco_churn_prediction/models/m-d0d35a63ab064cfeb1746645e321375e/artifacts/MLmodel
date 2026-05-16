@@ -1,0 +1,22 @@
+artifact_path: file:C:/Customerchurn_mlops/artifacts/mlflow/telco_churn_prediction/models/m-d0d35a63ab064cfeb1746645e321375e/artifacts
+flavors:
+  python_function:
+    data: model.ubj
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.xgboost
+    python_version: 3.13.13
+  xgboost:
+    code: null
+    data: model.ubj
+    model_class: xgboost.sklearn.XGBClassifier
+    model_format: ubj
+    xgb_version: 3.2.0
+mlflow_version: 3.12.0
+model_id: m-d0d35a63ab064cfeb1746645e321375e
+model_size_bytes: 710437
+model_uuid: m-d0d35a63ab064cfeb1746645e321375e
+prompts: null
+run_id: 9d7f0bf41fa7488781b135b173112b1d
+utc_time_created: '2026-05-16 01:29:24.273924'

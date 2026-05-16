@@ -1,0 +1,94 @@
+stages:
+  ingest:
+    cmd: venv\Scripts\python -m src.data.ingest
+    deps:
+      - src/data/ingest.py
+      - Raw_data_set/WA_Fn-UseC_-Telco-Customer-Churn.csv
+    params:
+      - params.yaml:
+          - data.raw_path
+    outs:
+      - data/raw/churn_raw.csv
+
+  validate:
+    cmd: venv\Scripts\python -m src.data.validate
+    deps:
+      - src/data/validate.py
+      - src/data/clickhouse_client.py
+      - data/raw/churn_raw.csv
+    params:
+      - params.yaml:
+          - data.validated_path
+          - clickhouse
+          - great_expectations
+    outs:
+      - data/processed/churn_validated.csv
+    metrics:
+      - artifacts/ge_results/latest_validation.json:
+          cache: false
+
+  preprocess:
+    cmd: venv\Scripts\python -m src.data.preprocess
+    deps:
+      - src/data/preprocess.py
+      - src/data/clickhouse_client.py
+      - data/processed/churn_validated.csv
+    params:
+      - params.yaml:
+          - data.processed_path
+          - data.reference_path
+          - clickhouse
+    outs:
+      - data/processed/churn_processed.csv
+      - data/reference/churn_reference.csv
+
+  featurize:
+    cmd: venv\Scripts\python -m src.features.feature_store
+    deps:
+      - src/features/feature_store.py
+      - data/processed/churn_processed.csv
+    params:
+      - params.yaml:
+          - feast
+    outs:
+      - src/features/feature_repo/data/churn_features.parquet
+
+  train:
+    cmd: venv\Scripts\python -m src.models.train
+    deps:
+      - src/models/train.py
+      - src/features/feature_repo/data/churn_features.parquet
+      - data/processed/churn_processed.csv
+    params:
+      - params.yaml:
+          - data.random_state
+          - data.test_size
+          - data.val_size
+          - train
+          - mlflow
+    outs:
+      - artifacts/models/best_model.pkl
+    metrics:
+      - artifacts/metrics/train_metrics.json:
+          cache: false
+
+  evaluate:
+    cmd: venv\Scripts\python -m src.models.evaluate
+    deps:
+      - src/models/evaluate.py
+      - artifacts/models/best_model.pkl
+      - data/processed/churn_processed.csv
+    params:
+      - params.yaml:
+          - data.test_size
+          - data.random_state
+    metrics:
+      - artifacts/metrics/eval_metrics.json:
+          cache: false
+    plots:
+      - artifacts/plots/roc_curve.csv:
+          x: fpr
+          y: tpr
+      - artifacts/plots/pr_curve.csv:
+          x: recall
+          y: precision

@@ -1,0 +1,17 @@
+db:
+  host: marquez_db
+  port: 5432
+  name: marquez
+  user: marquez
+  password: marquez
+
+api:
+  host: 0.0.0.0
+  port: 5000
+
+admin:
+  host: 0.0.0.0
+  port: 5001
+
+logging:
+  level: INFO

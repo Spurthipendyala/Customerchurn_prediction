@@ -1,0 +1,22 @@
+{
+  "tenure": 0.123047,
+  "Contract_TwoYear": 0.120279,
+  "TotalCharges": 0.087969,
+  "MonthlyCharges": 0.080033,
+  "charges_per_month": 0.073424,
+  "OnlineSecurity": 0.067469,
+  "Contract_OneYear": 0.066162,
+  "InternetService_Fiber": 0.05755,
+  "TechSupport": 0.047361,
+  "InternetService_No": 0.043956,
+  "Dependents": 0.039222,
+  "OnlineBackup": 0.025756,
+  "has_internet": 0.023077,
+  "num_services": 0.022453,
+  "PaymentMethod_CreditCard": 0.02042,
+  "Partner": 0.018908,
+  "PaymentMethod_MailedCheck": 0.013661,
+  "DeviceProtection": 0.010798,
+  "gender_Male": 0.010107,
+  "PhoneService": 0.009357
+}

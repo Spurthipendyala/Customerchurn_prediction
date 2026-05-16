@@ -1,0 +1,212 @@
+schema: '2.0'
+stages:
+  ingest:
+    cmd: venv\Scripts\python -m src.data.ingest
+    deps:
+    - path: Raw_data_set/WA_Fn-UseC_-Telco-Customer-Churn.csv
+      hash: md5
+      md5: 0f9de68e012bd3aed5fa7cdc9fc421af
+      size: 977501
+    - path: src/data/ingest.py
+      hash: md5
+      md5: 86364c30ee40dc3f3aeb4c5bb8536207
+      size: 7475
+    params:
+      params.yaml:
+        data.raw_path: data/raw/churn_raw.csv
+    outs:
+    - path: data/raw/churn_raw.csv
+      hash: md5
+      md5: 7dcfd0992df59c0cd8dcddab8a20d2ec
+      size: 978955
+  validate:
+    cmd: venv\Scripts\python -m src.data.validate
+    deps:
+    - path: data/raw/churn_raw.csv
+      hash: md5
+      md5: 7dcfd0992df59c0cd8dcddab8a20d2ec
+      size: 978955
+    - path: src/data/clickhouse_client.py
+      hash: md5
+      md5: e9a949851b3f3a92f37b04df7eb30be0
+      size: 8547
+    - path: src/data/validate.py
+      hash: md5
+      md5: a22888dcef1f706d60a94e62af726dbf
+      size: 17410
+    params:
+      params.yaml:
+        clickhouse:
+          host: localhost
+          port: 8123
+          database: churn_mlops
+          user: default
+          password: ''
+          validated_table: churn_validated
+          processed_table: churn_processed
+        data.validated_path: data/processed/churn_validated.csv
+        great_expectations:
+          suite_name: churn_raw_suite
+          checkpoint_name: churn_checkpoint
+    outs:
+    - path: artifacts/ge_results/latest_validation.json
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: data/processed/churn_validated.csv
+      hash: md5
+      md5: 7dcfd0992df59c0cd8dcddab8a20d2ec
+      size: 978955
+  preprocess:
+    cmd: venv\Scripts\python -m src.data.preprocess
+    deps:
+    - path: data/processed/churn_validated.csv
+      hash: md5
+      md5: 7dcfd0992df59c0cd8dcddab8a20d2ec
+      size: 978955
+    - path: src/data/clickhouse_client.py
+      hash: md5
+      md5: e9a949851b3f3a92f37b04df7eb30be0
+      size: 8547
+    - path: src/data/preprocess.py
+      hash: md5
+      md5: c6400c61be286d79e139474e3696a653
+      size: 11990
+    params:
+      params.yaml:
+        clickhouse:
+          host: localhost
+          port: 8123
+          database: churn_mlops
+          user: default
+          password: ''
+          validated_table: churn_validated
+          processed_table: churn_processed
+        data.processed_path: data/processed/churn_processed.csv
+        data.reference_path: data/reference/churn_reference.csv
+    outs:
+    - path: data/processed/churn_processed.csv
+      hash: md5
+      md5: efd2ddbded090e57dc1581cc129efa32
+      size: 614889
+    - path: data/reference/churn_reference.csv
+      hash: md5
+      md5: cb664b05e92b0a5ad3ec7bb49609852c
+      size: 87587
+  featurize:
+    cmd: venv\Scripts\python -m src.features.feature_store
+    deps:
+    - path: data/processed/churn_processed.csv
+      hash: md5
+      md5: efd2ddbded090e57dc1581cc129efa32
+      size: 614889
+    - path: src/features/feature_store.py
+      hash: md5
+      md5: 02237aba0a4fb89368f3499a7a7803b5
+      size: 8244
+    params:
+      params.yaml:
+        feast:
+          repo_path: src/features/feature_repo
+          entity_name: customer
+          feature_service_name: churn_features
+    outs:
+    - path: src/features/feature_repo/data/churn_features.parquet
+      hash: md5
+      md5: 41a30377fe96086ebb2117b628fd3ce4
+      size: 252842
+  train:
+    cmd: venv\Scripts\python -m src.models.train
+    deps:
+    - path: data/processed/churn_processed.csv
+      hash: md5
+      md5: efd2ddbded090e57dc1581cc129efa32
+      size: 614889
+    - path: src/features/feature_repo/data/churn_features.parquet
+      hash: md5
+      md5: 41a30377fe96086ebb2117b628fd3ce4
+      size: 252842
+    - path: src/models/train.py
+      hash: md5
+      md5: cdd5da98a922923d4bbe0cf0eec65fe6
+      size: 13639
+    params:
+      params.yaml:
+        data.random_state: 42
+        data.test_size: 0.2
+        data.val_size: 0.1
+        mlflow:
+          tracking_uri: http://localhost:5001
+          experiment_name: telco_churn_prediction
+          registered_model_name: churn_classifier
+          artifact_path: models
+        train:
+          models:
+          - random_forest
+          - xgboost
+          - lightgbm
+          cv_folds: 5
+          scoring: roc_auc
+          random_forest:
+            n_estimators: 200
+            max_depth: 10
+            min_samples_split: 5
+            min_samples_leaf: 2
+            class_weight: balanced
+            random_state: 42
+          xgboost:
+            n_estimators: 200
+            max_depth: 6
+            learning_rate: 0.05
+            subsample: 0.8
+            colsample_bytree: 0.8
+            scale_pos_weight: 3
+            random_state: 42
+          lightgbm:
+            n_estimators: 200
+            max_depth: 6
+            learning_rate: 0.05
+            num_leaves: 31
+            class_weight: balanced
+            random_state: 42
+    outs:
+    - path: artifacts/metrics/train_metrics.json
+      hash: md5
+      md5: d2e13b3477c45aa46877906dc2aa30e8
+      size: 361
+    - path: artifacts/models/best_model.pkl
+      hash: md5
+      md5: 3d4ccb65192b91a1a8f226a61c429529
+      size: 21401521
+  evaluate:
+    cmd: venv\Scripts\python -m src.models.evaluate
+    deps:
+    - path: artifacts/models/best_model.pkl
+      hash: md5
+      md5: 3d4ccb65192b91a1a8f226a61c429529
+      size: 21401521
+    - path: data/processed/churn_processed.csv
+      hash: md5
+      md5: efd2ddbded090e57dc1581cc129efa32
+      size: 614889
+    - path: src/models/evaluate.py
+      hash: md5
+      md5: ca569f42ef07db4adf0d37338e1463f6
+      size: 2701
+    params:
+      params.yaml:
+        data.random_state: 42
+        data.test_size: 0.2
+    outs:
+    - path: artifacts/metrics/eval_metrics.json
+      hash: md5
+      md5: 4b7525faa328525efea534de8eae8aae
+      size: 179
+    - path: artifacts/plots/pr_curve.csv
+      hash: md5
+      md5: 6a9a9367f1a29bd5934f2b58d1443fd9
+      size: 53942
+    - path: artifacts/plots/roc_curve.csv
+      hash: md5
+      md5: 07d86fc0c04c87a527c326082190b57e
+      size: 15404

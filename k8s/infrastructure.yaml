@@ -1,0 +1,88 @@
+# ─── MLflow ──────────────────────────────────────────────────────────────────
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow
+  namespace: churn-mlops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mlflow
+  template:
+    metadata:
+      labels:
+        app: mlflow
+    spec:
+      containers:
+        - name: mlflow
+          image: ghcr.io/mlflow/mlflow:v2.12.2
+          command: ["mlflow", "server", "--backend-store-uri", "sqlite:///mlflow.db", "--default-artifact-root", "/mlflow/artifacts", "--host", "0.0.0.0", "--port", "5000"]
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: mlflow-data
+              mountPath: /mlflow
+      volumes:
+        - name: mlflow-data
+          emptyDir: {} # For demo; use PVC for persistence
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow-svc
+  namespace: churn-mlops
+spec:
+  selector:
+    app: mlflow
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+---
+# ─── ClickHouse ──────────────────────────────────────────────────────────────
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clickhouse
+  namespace: churn-mlops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clickhouse
+  template:
+    metadata:
+      labels:
+        app: clickhouse
+    spec:
+      containers:
+        - name: clickhouse
+          image: clickhouse/clickhouse-server:24.3
+          ports:
+            - containerPort: 8123
+            - containerPort: 9000
+          volumeMounts:
+            - name: clickhouse-data
+              mountPath: /var/lib/clickhouse
+      volumes:
+        - name: clickhouse-data
+          emptyDir: {} # For demo; use PVC for persistence
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clickhouse-svc
+  namespace: churn-mlops
+spec:
+  selector:
+    app: clickhouse
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8123
+      targetPort: 8123
+    - name: native
+      protocol: TCP
+      port: 9000
+      targetPort: 9000

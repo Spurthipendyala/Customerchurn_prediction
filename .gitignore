@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# MLOps
+mlruns/
+mlflow.db
+outputs/
+artifacts/drift_reports/*.html
+artifacts/drift_reports/*.json
+artifacts/ge_results/
+
+# Data (DVC handles this)
+data/raw/
+data/processed/
+!data/raw/.gitignore
+!data/processed/.gitignore
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Frontend
+frontend/node_modules/
+frontend/build/
+.npm

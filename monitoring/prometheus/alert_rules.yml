@@ -1,0 +1,36 @@
+groups:
+  - name: churn_api_alerts
+    rules:
+      - alert: HighChurnPredictionRate
+        expr: rate(churn_predictions_total{prediction_result="churn"}[5m]) > 0.5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High churn prediction rate detected"
+          description: "More than 50% of predictions are churn in the last 5 minutes."
+
+      - alert: APIHighLatency
+        expr: histogram_quantile(0.95, rate(churn_prediction_latency_seconds_bucket[5m])) > 1.0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API P95 latency exceeds 1 second"
+
+      - alert: DataDriftDetected
+        expr: churn_drift_score > 0.2
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Data drift detected above threshold"
+          description: "Drift score {{ $value }} exceeds threshold of 0.2"
+
+      - alert: APIDown
+        expr: up{job="churn-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Churn API is down"

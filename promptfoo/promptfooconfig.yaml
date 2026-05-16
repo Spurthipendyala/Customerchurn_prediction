@@ -1,0 +1,91 @@
+description: "Promptfoo evaluation for Telco Churn Prediction API"
+
+providers:
+  - id: http
+    config:
+      url: http://localhost:8000/predict
+      method: POST
+      headers:
+        Content-Type: application/json
+      body: "{{prompt}}"
+
+prompts:
+  - |
+    {
+      "customerID": "TEST-001",
+      "tenure": {{tenure}},
+      "MonthlyCharges": {{monthly_charges}},
+      "TotalCharges": {{total_charges}},
+      "SeniorCitizen": 0, "Partner": 0, "Dependents": 0,
+      "PhoneService": 1, "MultipleLines": 0,
+      "OnlineSecurity": 0, "OnlineBackup": 0, "DeviceProtection": 0,
+      "TechSupport": 0, "StreamingTV": 0, "StreamingMovies": 0,
+      "PaperlessBilling": 1, "gender_Male": 0,
+      "InternetService_Fiber": 1, "InternetService_No": 0,
+      "Contract_OneYear": 0, "Contract_TwoYear": 0,
+      "PaymentMethod_CreditCard": 0, "PaymentMethod_ElecCheck": 1,
+      "PaymentMethod_MailedCheck": 0
+    }
+
+tests:
+  - description: "New Fiber optic customer (month-to-month) should be high risk"
+    vars:
+      tenure: 2
+      monthly_charges: 95.5
+      total_charges: 191.0
+    assert:
+      - type: javascript
+        value: JSON.parse(output).churn_probability > 0.4
+      - type: javascript
+        value: JSON.parse(output).customerID === "TEST-001"
+      - type: javascript
+        value: ["HIGH", "CRITICAL", "MEDIUM"].includes(JSON.parse(output).risk_level)
+
+  - description: "Long-term two-year contract customer should be low risk"
+    vars:
+      tenure: 60
+      monthly_charges: 55.0
+      total_charges: 3300.0
+    assert:
+      - type: javascript
+        value: JSON.parse(output).churn_probability < 0.5
+      - type: javascript
+        value: JSON.parse(output).churn_prediction === 0
+
+  - description: "API response must have all required fields"
+    vars:
+      tenure: 12
+      monthly_charges: 70.0
+      total_charges: 840.0
+    assert:
+      - type: javascript
+        value: |
+          const r = JSON.parse(output);
+          r.hasOwnProperty("prediction_id") &&
+          r.hasOwnProperty("churn_probability") &&
+          r.hasOwnProperty("churn_prediction") &&
+          r.hasOwnProperty("risk_level") &&
+          r.hasOwnProperty("model_name") &&
+          r.hasOwnProperty("latency_ms")
+
+  - description: "Churn probability must be between 0 and 1"
+    vars:
+      tenure: 5
+      monthly_charges: 80.0
+      total_charges: 400.0
+    assert:
+      - type: javascript
+        value: |
+          const p = JSON.parse(output).churn_probability;
+          p >= 0.0 && p <= 1.0
+
+  - description: "Senior citizen with month-to-month high charges should be flagged"
+    vars:
+      tenure: 3
+      monthly_charges: 99.0
+      total_charges: 297.0
+    assert:
+      - type: javascript
+        value: JSON.parse(output).churn_probability > 0.3
+
+outputPath: promptfoo/results.json

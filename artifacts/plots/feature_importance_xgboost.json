@@ -1,0 +1,22 @@
+{
+  "Contract_TwoYear": 0.3444109857082367,
+  "Contract_OneYear": 0.143546000123024,
+  "InternetService_No": 0.1289539933204651,
+  "InternetService_Fiber": 0.07418499886989594,
+  "OnlineSecurity": 0.03631899878382683,
+  "TechSupport": 0.026041999459266663,
+  "PhoneService": 0.019322000443935394,
+  "PaymentMethod_MailedCheck": 0.01926800049841404,
+  "PaymentMethod_CreditCard": 0.01919499970972538,
+  "Dependents": 0.01745700091123581,
+  "OnlineBackup": 0.017449000850319862,
+  "StreamingMovies": 0.015426999889314175,
+  "TotalCharges": 0.013898000121116638,
+  "tenure": 0.012508000247180462,
+  "Partner": 0.011663000099360943,
+  "has_internet": 0.010944999754428864,
+  "DeviceProtection": 0.010769999586045742,
+  "MonthlyCharges": 0.01076200045645237,
+  "charges_per_month": 0.01016900036484003,
+  "PaymentMethod_ElecCheck": 0.008848000317811966
+}

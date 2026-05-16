@@ -1,0 +1,12 @@
+FROM python:3.10-slim AS trainer
+WORKDIR /app
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY src/ ./src/
+COPY params.yaml .
+COPY .env .
+COPY Raw_data_set/ ./Raw_data_set/
+RUN mkdir -p data/raw data/processed data/reference data/features \
+    artifacts/models artifacts/metrics artifacts/plots artifacts/reports logs mlruns
+CMD ["python", "-m", "src.models.train"]

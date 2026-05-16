@@ -1,0 +1,16 @@
+{
+  "best_model": "voting_ensemble",
+  "best_val_auc": 0.848,
+  "best_run_id": "b48789ae7e6547dbbe5b4884e0724862",
+  "all_results": {
+    "random_forest": 0.8468,
+    "xgboost": 0.8458,
+    "lightgbm": 0.8472,
+    "voting_ensemble": 0.848
+  },
+  "model_registry": {
+    "name": "churn_classifier",
+    "version": "2",
+    "stage": "Staging"
+  }
+}

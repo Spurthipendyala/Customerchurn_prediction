@@ -1,0 +1,23 @@
+artifact_path: file:C:/Customerchurn_mlops/artifacts/mlflow/telco_churn_prediction/models/m-8f077504e70c4921b56882dd90977194/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.13.13
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+    skops_trusted_types: null
+mlflow_version: 3.12.0
+model_id: m-8f077504e70c4921b56882dd90977194
+model_size_bytes: 9314621
+model_uuid: m-8f077504e70c4921b56882dd90977194
+prompts: null
+run_id: eb7e2f30910d4ab1bad30884b7236dfa
+utc_time_created: '2026-05-16 01:05:25.118390'

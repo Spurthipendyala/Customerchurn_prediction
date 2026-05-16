@@ -1,0 +1,15 @@
+venv/
+.venv/
+node_modules/
+frontend/node_modules/
+.git/
+.dvc/
+artifacts/mlflow/
+mlruns/
+logs/
+*.pkl
+*.pyc
+__pycache__/
+.pytest_cache/
+.gx/
+great_expectations/uncommitted/

@@ -1,0 +1,91 @@
+# ─── Data ──────────────────────────────────────────────────────────────────────
+data:
+  raw_path: data/raw/churn_raw.csv
+  validated_path: data/processed/churn_validated.csv
+  processed_path: data/processed/churn_processed.csv
+  reference_path: data/reference/churn_reference.csv
+  test_size: 0.2
+  val_size: 0.1
+  random_state: 42
+  target_column: Churn
+
+# ─── ClickHouse ────────────────────────────────────────────────────────────────
+clickhouse:
+  host: localhost
+  port: 8123
+  database: churn_mlops
+  user: default
+  password: ""
+  validated_table: churn_validated
+  processed_table: churn_processed
+
+# ─── Great Expectations ────────────────────────────────────────────────────────
+great_expectations:
+  suite_name: churn_raw_suite
+  checkpoint_name: churn_checkpoint
+
+# ─── OpenLineage ───────────────────────────────────────────────────────────────
+openlineage:
+  url: http://localhost:5000
+  namespace: churn_mlops_pipeline
+
+# ─── MLflow ────────────────────────────────────────────────────────────────────
+mlflow:
+  tracking_uri: http://localhost:5001
+  experiment_name: telco_churn_prediction
+  registered_model_name: churn_classifier
+  artifact_path: models
+
+# ─── Feast ─────────────────────────────────────────────────────────────────────
+feast:
+  repo_path: src/features/feature_repo
+  entity_name: customer
+  feature_service_name: churn_features
+
+# ─── Training ──────────────────────────────────────────────────────────────────
+train:
+  models:
+    - random_forest
+    - xgboost
+    - lightgbm
+  cv_folds: 5
+  scoring: roc_auc
+
+  random_forest:
+    n_estimators: 200
+    max_depth: 10
+    min_samples_split: 5
+    min_samples_leaf: 2
+    class_weight: balanced
+    random_state: 42
+
+  xgboost:
+    n_estimators: 200
+    max_depth: 6
+    learning_rate: 0.05
+    subsample: 0.8
+    colsample_bytree: 0.8
+    scale_pos_weight: 3
+    random_state: 42
+
+  lightgbm:
+    n_estimators: 200
+    max_depth: 6
+    learning_rate: 0.05
+    num_leaves: 31
+    class_weight: balanced
+    random_state: 42
+
+# ─── API ───────────────────────────────────────────────────────────────────────
+api:
+  host: 0.0.0.0
+  port: 8000
+  workers: 4
+  model_name: churn_classifier
+  model_stage: Production
+
+# ─── Monitoring ────────────────────────────────────────────────────────────────
+monitoring:
+  drift_threshold: 0.2
+  report_path: artifacts/drift_reports
+  reference_size: 1000
