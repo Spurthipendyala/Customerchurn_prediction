@@ -2,9 +2,9 @@ name: MLOps CI Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, master, develop]
   pull_request:
-    branches: [main]
+    branches: [main, master]
 
 env:
   PYTHON_VERSION: "3.10"
@@ -150,7 +150,7 @@ jobs:
     name: Build & Push Docker Images
     runs-on: ubuntu-latest
     needs: train-model
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     permissions:
       contents: read
       packages: write
