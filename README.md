@@ -86,13 +86,16 @@ cd frontend && npm start
 
 | Tool | URL | Credentials | Description |
 | :--- | :--- | :--- | :--- |
+| **Prediction API** | [http://localhost:8000/docs](http://localhost:8000/docs) | - | Interactive Swagger UI for model serving. |
+| **Frontend UI** | [http://localhost:3001](http://localhost:3001) | - | Customer Churn prediction dashboard. |
+| **ArgoCD (GitOps)** | [https://localhost:8080](https://localhost:8080) | `admin` / `oKh8UsfXFab-SUkV` | GitOps deployment controller. |
 | **MLflow** | [http://localhost:5001](http://localhost:5001) | - | Experiment tracking & model registry. |
 | **Grafana** | [http://localhost:3002](http://localhost:3002) | `admin` / `admin` | System & Model monitoring dashboards. |
 | **Prometheus** | [http://localhost:9090](http://localhost:9090) | - | Real-time metrics collection. |
 | **Marquez (UI)** | [http://localhost:3000](http://localhost:3000) | - | Pipeline lineage & metadata visualization. |
 | **ClickHouse** | [http://localhost:8123](http://localhost:8123) | `default` / (none) | High-performance OLAP database. |
-| **API Docs** | [http://localhost:8000/docs](http://localhost:8000/docs) | - | Interactive Swagger UI for model serving. |
-| **Frontend UI** | [http://localhost:3001](http://localhost:3001) | - | Customer Churn prediction dashboard. |
+| **Promptfoo UI** | [http://localhost:4000](http://localhost:4000) | - | Model behavior & segment evaluation UI. |
+| **CI/CD** | [GitHub Actions](https://github.com/Spurthipendyala/Customerchurn_prediction/actions) | - | Automated build, test, and deploy pipeline. |
 
 ---
 
