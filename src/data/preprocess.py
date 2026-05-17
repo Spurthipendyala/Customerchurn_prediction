@@ -40,9 +40,7 @@ def get_dvc_commit_hash() -> str:
         return "unknown"
 
 
-def emit_preprocessing_lineage(
-    run_id: str, state: str, input_path: str, output_path: str
-) -> None:
+def emit_preprocessing_lineage(run_id: str, state: str, input_path: str, output_path: str) -> None:
     """Emit OpenLineage event for preprocessing step."""
     try:
         from openlineage.client import OpenLineageClient
@@ -114,9 +112,7 @@ def preprocess_data() -> pd.DataFrame:
     reference_path = Path(params["data"]["reference_path"])
 
     logger.info(f"🔧 Starting preprocessing | run_id={run_id} | commit={dvc_hash}")
-    emit_preprocessing_lineage(
-        run_id, "START", str(validated_path), str(processed_path)
-    )
+    emit_preprocessing_lineage(run_id, "START", str(validated_path), str(processed_path))
 
     # ── Load validated data ───────────────────────────────────────────────────
     df = pd.read_csv(validated_path)
@@ -140,9 +136,7 @@ def preprocess_data() -> pd.DataFrame:
         "StreamingMovies",
     ]
     for col in binary_cols:
-        df[col] = df[col].map(
-            {"Yes": 1, "No": 0, "No phone service": 0, "No internet service": 0}
-        )
+        df[col] = df[col].map({"Yes": 1, "No": 0, "No phone service": 0, "No internet service": 0})
         df[col] = df[col].astype("int8")
 
     # ── 3. Gender encoding ────────────────────────────────────────────────────
@@ -150,9 +144,7 @@ def preprocess_data() -> pd.DataFrame:
     df.drop(columns=["gender"], inplace=True)
 
     # ── 4. InternetService one-hot ────────────────────────────────────────────
-    df["InternetService_Fiber"] = (df["InternetService"] == "Fiber optic").astype(
-        "int8"
-    )
+    df["InternetService_Fiber"] = (df["InternetService"] == "Fiber optic").astype("int8")
     df["InternetService_No"] = (df["InternetService"] == "No").astype("int8")
     df.drop(columns=["InternetService"], inplace=True)
 
@@ -162,15 +154,9 @@ def preprocess_data() -> pd.DataFrame:
     df.drop(columns=["Contract"], inplace=True)
 
     # ── 6. PaymentMethod one-hot ──────────────────────────────────────────────
-    df["PaymentMethod_CreditCard"] = (
-        df["PaymentMethod"] == "Credit card (automatic)"
-    ).astype("int8")
-    df["PaymentMethod_ElecCheck"] = (df["PaymentMethod"] == "Electronic check").astype(
-        "int8"
-    )
-    df["PaymentMethod_MailedCheck"] = (df["PaymentMethod"] == "Mailed check").astype(
-        "int8"
-    )
+    df["PaymentMethod_CreditCard"] = (df["PaymentMethod"] == "Credit card (automatic)").astype("int8")
+    df["PaymentMethod_ElecCheck"] = (df["PaymentMethod"] == "Electronic check").astype("int8")
+    df["PaymentMethod_MailedCheck"] = (df["PaymentMethod"] == "Mailed check").astype("int8")
     df.drop(columns=["PaymentMethod"], inplace=True)
 
     # ── 7. Feature Engineering ────────────────────────────────────────────────
@@ -188,9 +174,9 @@ def preprocess_data() -> pd.DataFrame:
     df["tenure_group"] = df["tenure"].apply(get_tenure_group)
 
     # Charges per month (ratio feature)
-    df["charges_per_month"] = np.where(
-        df["tenure"] > 0, df["TotalCharges"] / df["tenure"], df["MonthlyCharges"]
-    ).round(4)
+    df["charges_per_month"] = np.where(df["tenure"] > 0, df["TotalCharges"] / df["tenure"], df["MonthlyCharges"]).round(
+        4
+    )
 
     # Has internet service
     df["has_internet"] = (df["InternetService_No"] == 0).astype("int8")
@@ -249,9 +235,7 @@ def preprocess_data() -> pd.DataFrame:
     reference_path.parent.mkdir(parents=True, exist_ok=True)
     reference_df = df.sample(n=min(1000, len(df)), random_state=42)
     reference_df.to_csv(reference_path, index=False)
-    logger.info(
-        f"📌 Reference dataset saved → {reference_path} ({len(reference_df)} rows)"
-    )
+    logger.info(f"📌 Reference dataset saved → {reference_path} ({len(reference_df)} rows)")
 
     # ── 11. Store processed data in ClickHouse ────────────────────────────────
     try:
@@ -299,10 +283,7 @@ def preprocess_data() -> pd.DataFrame:
             pipeline_run_id=run_id,
             dvc_commit_hash=dvc_hash,
         )
-        logger.success(
-            f"🏠 ClickHouse: Inserted {rows_inserted} processed rows → "
-            f"churn_mlops.{processed_table}"
-        )
+        logger.success(f"🏠 ClickHouse: Inserted {rows_inserted} processed rows → " f"churn_mlops.{processed_table}")
 
         # Log ClickHouse table stats
         stats = ch.get_stats()
@@ -314,9 +295,7 @@ def preprocess_data() -> pd.DataFrame:
         logger.warning("⚠️  Continuing without ClickHouse storage...")
 
     # ── 12. Emit COMPLETE lineage event ───────────────────────────────────────
-    emit_preprocessing_lineage(
-        run_id, "COMPLETE", str(validated_path), str(processed_path)
-    )
+    emit_preprocessing_lineage(run_id, "COMPLETE", str(validated_path), str(processed_path))
 
     # ── Log final summary ─────────────────────────────────────────────────────
     churn_rate = df["Churn"].mean()
@@ -324,9 +303,7 @@ def preprocess_data() -> pd.DataFrame:
     logger.info(f"   Input rows: {len(df)}")
     logger.info(f"   Output features: {len(df.columns) - 1}")
     logger.info(f"   Churn rate: {churn_rate:.2%}")
-    logger.info(
-        "   New features: tenure_group, charges_per_month, has_internet, num_services"
-    )
+    logger.info("   New features: tenure_group, charges_per_month, has_internet, num_services")
     logger.info(f"   Tenure groups: {df['tenure_group'].value_counts().to_dict()}")
     logger.info(f"   Avg services per customer: {df['num_services'].mean():.1f}")
 

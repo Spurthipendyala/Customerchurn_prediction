@@ -45,17 +45,13 @@ def load_params() -> dict:
 
 def prepare_data(
     params: dict,
-) -> Tuple[
-    pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.Series, list
-]:
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, pd.Series, list]:
     """Load and split data into train/val/test sets."""
     processed_path = Path(params["data"]["processed_path"])
     df = pd.read_csv(processed_path)
 
     # Drop non-feature columns
-    feature_cols = [
-        c for c in df.columns if c not in ["customerID", "Churn", "tenure_group"]
-    ]
+    feature_cols = [c for c in df.columns if c not in ["customerID", "Churn", "tenure_group"]]
     X = df[feature_cols]
     y = df["Churn"]
 
@@ -77,9 +73,7 @@ def prepare_data(
 
     logger.info("📊 Dataset splits:")
     logger.info(f"   Train: {len(X_train)} | Val: {len(X_val)} | Test: {len(X_test)}")
-    logger.info(
-        f"   Churn rate → Train: {y_train.mean():.2%} | Test: {y_test.mean():.2%}"
-    )
+    logger.info(f"   Churn rate → Train: {y_train.mean():.2%} | Test: {y_test.mean():.2%}")
 
     return X_train, X_val, X_test, y_train, y_val, y_test, feature_cols
 
@@ -103,16 +97,12 @@ def get_models(params: dict) -> Dict[str, Any]:
 
     return {
         "random_forest": RandomForestClassifier(**rf_params),
-        "xgboost": XGBClassifier(
-            **xgb_params, use_label_encoder=False, eval_metric="logloss", verbosity=0
-        ),
+        "xgboost": XGBClassifier(**xgb_params, use_label_encoder=False, eval_metric="logloss", verbosity=0),
         "lightgbm": LGBMClassifier(**lgbm_params, verbose=-1),
     }
 
 
-def evaluate_model(
-    model, X: pd.DataFrame, y: pd.Series, prefix: str = ""
-) -> Dict[str, float]:
+def evaluate_model(model, X: pd.DataFrame, y: pd.Series, prefix: str = "") -> Dict[str, float]:
     """Compute all classification metrics."""
     y_pred = model.predict(X)
     y_proba = model.predict_proba(X)[:, 1]
@@ -156,12 +146,8 @@ def train_and_log_model(
         mlflow.log_param("dataset_size", len(X_train) + len(X_val) + len(X_test))
 
         # Cross-validation
-        cv = StratifiedKFold(
-            n_splits=params["train"]["cv_folds"], shuffle=True, random_state=42
-        )
-        cv_scores = cross_val_score(
-            model, X_train, y_train, cv=cv, scoring="roc_auc", n_jobs=-1
-        )
+        cv = StratifiedKFold(n_splits=params["train"]["cv_folds"], shuffle=True, random_state=42)
+        cv_scores = cross_val_score(model, X_train, y_train, cv=cv, scoring="roc_auc", n_jobs=-1)
         mlflow.log_metric("cv_auc_mean", round(cv_scores.mean(), 4))
         mlflow.log_metric("cv_auc_std", round(cv_scores.std(), 4))
         logger.info(f"   CV AUC: {cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
@@ -195,9 +181,7 @@ def train_and_log_model(
         if hasattr(model, "feature_importances_"):
             fi_path = Path(f"artifacts/plots/feature_importance_{model_name}.json")
             fi_path.parent.mkdir(parents=True, exist_ok=True)
-            fi = dict(
-                zip(X_train.columns, model.feature_importances_.round(6).tolist())
-            )
+            fi = dict(zip(X_train.columns, model.feature_importances_.round(6).tolist()))
             fi_sorted = dict(sorted(fi.items(), key=lambda x: x[1], reverse=True)[:20])
             with open(fi_path, "w") as f:
                 json.dump(fi_sorted, f, indent=2)
@@ -253,9 +237,7 @@ def train() -> None:
 
     # ── Prepare data ──────────────────────────────────────────────────────────
     X_train, X_val, X_test, y_train, y_val, y_test, feature_cols = prepare_data(params)
-    X_train_res, y_train_res = apply_smote(
-        X_train, y_train, params["data"]["random_state"]
-    )
+    X_train_res, y_train_res = apply_smote(X_train, y_train, params["data"]["random_state"])
 
     # ── Train all models ──────────────────────────────────────────────────────
     models = get_models(params)
@@ -361,9 +343,7 @@ def train() -> None:
 
     logger.success("🎉 Training pipeline complete!")
     logger.info("\n📊 All model AUCs:")
-    for name, (auc, _, _) in sorted(
-        results.items(), key=lambda x: x[1][0], reverse=True
-    ):
+    for name, (auc, _, _) in sorted(results.items(), key=lambda x: x[1][0], reverse=True):
         marker = "⭐" if name == best_name else "  "
         logger.info(f"  {marker} {name:20s}: {auc:.4f}")
 

@@ -50,9 +50,7 @@ def trigger_retraining(reason: str = "Unknown"):
         # Use venv python if available
         # We use subprocess to run dvc repro
         # Note: In a production environment, this might be a webhook to a CI/CD runner
-        result = subprocess.run(
-            ["dvc", "repro"], capture_output=True, text=True, check=True
-        )
+        result = subprocess.run(["dvc", "repro"], capture_output=True, text=True, check=True)
         logger.success("✅ DVC pipeline execution completed successfully!")
         logger.debug(f"DVC Output: {result.stdout}")
 
@@ -82,9 +80,7 @@ def check_and_trigger():
 
     if drift_score >= threshold:
         if auto_retrain:
-            trigger_retraining(
-                reason=f"Drift score {drift_score:.4f} >= threshold {threshold}"
-            )
+            trigger_retraining(reason=f"Drift score {drift_score:.4f} >= threshold {threshold}")
         else:
             logger.info("ℹ️  Drift detected but auto_retrain is disabled.")
     else:

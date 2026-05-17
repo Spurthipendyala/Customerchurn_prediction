@@ -166,9 +166,7 @@ class ClickHouseClient:
 
     def create_predictions_table(self, table_name: str = "churn_predictions") -> None:
         """Create the predictions logging table."""
-        ddl = self.CREATE_PREDICTIONS_TABLE.format(
-            database=self.database, table=table_name
-        )
+        ddl = self.CREATE_PREDICTIONS_TABLE.format(database=self.database, table=table_name)
         self.client.command(ddl)
         logger.info(f"✅ Table '{self.database}.{table_name}' ready.")
 
@@ -208,10 +206,7 @@ class ClickHouseClient:
         rows_after = self._get_row_count(table)
         inserted = rows_after - rows_before
 
-        logger.info(
-            f"📥 Inserted {inserted} rows into '{self.database}.{table}'. "
-            f"Total rows: {rows_after}"
-        )
+        logger.info(f"📥 Inserted {inserted} rows into '{self.database}.{table}'. " f"Total rows: {rows_after}")
         return inserted
 
     def _get_row_count(self, table: str) -> int:
@@ -236,9 +231,7 @@ class ClickHouseClient:
         """
         return self.query_to_dataframe(sql)
 
-    def get_reference_data(
-        self, table: Optional[str] = None, limit: int = 1000
-    ) -> pd.DataFrame:
+    def get_reference_data(self, table: Optional[str] = None, limit: int = 1000) -> pd.DataFrame:
         """Fetch reference dataset for drift monitoring."""
         table = table or os.getenv("CLICKHOUSE_PROCESSED_TABLE", "churn_processed")
         sql = """

@@ -29,9 +29,7 @@ def load_params() -> dict:
 
 
 # ── OpenLineage lineage helper ───────────────────────────────────────────────
-def emit_validation_lineage(
-    run_id: str, state: str, input_path: str, success: bool
-) -> None:
+def emit_validation_lineage(run_id: str, state: str, input_path: str, success: bool) -> None:
     try:
         from openlineage.client import OpenLineageClient
         from openlineage.client.run import (
@@ -53,11 +51,7 @@ def emit_validation_lineage(
             run=Run(runId=run_id),
             job=Job(namespace=ns, name="data_validation"),
             inputs=[InputDataset(namespace=ns, name=input_path)],
-            outputs=[
-                OutputDataset(
-                    namespace=ns, name="clickhouse://churn_mlops.churn_validated"
-                )
-            ],
+            outputs=[OutputDataset(namespace=ns, name="clickhouse://churn_mlops.churn_validated")],
             producer="https://github.com/your-org/customerchurn_mlops",
         )
         client.emit(event)
@@ -115,15 +109,11 @@ def build_expectation_suite(context, suite_name: str) -> None:
 
     # ── gender ──────────────────────────────────────────────────────────────
     validator.expect_column_values_to_not_be_null(column="gender")
-    validator.expect_column_values_to_be_in_set(
-        column="gender", value_set=["Male", "Female"]
-    )
+    validator.expect_column_values_to_be_in_set(column="gender", value_set=["Male", "Female"])
 
     # ── SeniorCitizen ────────────────────────────────────────────────────────
     validator.expect_column_values_to_not_be_null(column="SeniorCitizen")
-    validator.expect_column_values_to_be_in_set(
-        column="SeniorCitizen", value_set=[0, 1]
-    )
+    validator.expect_column_values_to_be_in_set(column="SeniorCitizen", value_set=[0, 1])
 
     # ── Partner / Dependents ─────────────────────────────────────────────────
     for col in ["Partner", "Dependents", "PhoneService", "PaperlessBilling"]:
@@ -132,38 +122,24 @@ def build_expectation_suite(context, suite_name: str) -> None:
 
     # ── tenure ───────────────────────────────────────────────────────────────
     validator.expect_column_values_to_not_be_null(column="tenure")
-    validator.expect_column_values_to_be_between(
-        column="tenure", min_value=0, max_value=120
-    )
-    validator.expect_column_mean_to_be_between(
-        column="tenure", min_value=10, max_value=50
-    )
+    validator.expect_column_values_to_be_between(column="tenure", min_value=0, max_value=120)
+    validator.expect_column_mean_to_be_between(column="tenure", min_value=10, max_value=50)
 
     # ── MonthlyCharges ───────────────────────────────────────────────────────
     validator.expect_column_values_to_not_be_null(column="MonthlyCharges")
-    validator.expect_column_values_to_be_between(
-        column="MonthlyCharges", min_value=0, max_value=200
-    )
-    validator.expect_column_mean_to_be_between(
-        column="MonthlyCharges", min_value=30, max_value=100
-    )
+    validator.expect_column_values_to_be_between(column="MonthlyCharges", min_value=0, max_value=200)
+    validator.expect_column_mean_to_be_between(column="MonthlyCharges", min_value=30, max_value=100)
 
     # ── TotalCharges ─────────────────────────────────────────────────────────
-    validator.expect_column_values_to_be_between(
-        column="TotalCharges", min_value=0, max_value=10000, mostly=0.99
-    )
+    validator.expect_column_values_to_be_between(column="TotalCharges", min_value=0, max_value=10000, mostly=0.99)
 
     # ── InternetService ──────────────────────────────────────────────────────
     validator.expect_column_values_to_not_be_null(column="InternetService")
-    validator.expect_column_values_to_be_in_set(
-        column="InternetService", value_set=["DSL", "Fiber optic", "No"]
-    )
+    validator.expect_column_values_to_be_in_set(column="InternetService", value_set=["DSL", "Fiber optic", "No"])
 
     # ── Contract ─────────────────────────────────────────────────────────────
     validator.expect_column_values_to_not_be_null(column="Contract")
-    validator.expect_column_values_to_be_in_set(
-        column="Contract", value_set=["Month-to-month", "One year", "Two year"]
-    )
+    validator.expect_column_values_to_be_in_set(column="Contract", value_set=["Month-to-month", "One year", "Two year"])
 
     # ── PaymentMethod ────────────────────────────────────────────────────────
     validator.expect_column_values_to_not_be_null(column="PaymentMethod")
@@ -178,16 +154,12 @@ def build_expectation_suite(context, suite_name: str) -> None:
     )
 
     # ── MultipleLines ─────────────────────────────────────────────────────────
-    validator.expect_column_values_to_be_in_set(
-        column="MultipleLines", value_set=["Yes", "No", "No phone service"]
-    )
+    validator.expect_column_values_to_be_in_set(column="MultipleLines", value_set=["Yes", "No", "No phone service"])
 
     # ── Churn (target) ───────────────────────────────────────────────────────
     validator.expect_column_values_to_not_be_null(column="Churn")
     validator.expect_column_values_to_be_in_set(column="Churn", value_set=["Yes", "No"])
-    validator.expect_column_proportion_of_unique_values_to_be_between(
-        column="Churn", min_value=0.0, max_value=0.5
-    )
+    validator.expect_column_proportion_of_unique_values_to_be_between(column="Churn", min_value=0.0, max_value=0.5)
 
     # ── Churn rate distribution ───────────────────────────────────────────────
     validator.expect_column_kl_divergence_to_be_less_than(
@@ -195,9 +167,7 @@ def build_expectation_suite(context, suite_name: str) -> None:
     )
 
     validator.save_expectation_suite(discard_failed_expectations=False)
-    logger.success(
-        f"✅ Expectation suite '{suite_name}' built with {len(suite.expectations)} expectations."
-    )
+    logger.success(f"✅ Expectation suite '{suite_name}' built with {len(suite.expectations)} expectations.")
 
 
 def setup_ge_context():
@@ -255,16 +225,10 @@ def validate_data() -> Tuple[pd.DataFrame, bool]:
         "valid_gender": df["gender"].isin(["Male", "Female"]).all(),
         "valid_churn": df["Churn"].isin(["Yes", "No"]).all(),
         "valid_tenure": ((df["tenure"] >= 0) & (df["tenure"] <= 120)).all(),
-        "valid_monthly_charges": (
-            (df["MonthlyCharges"] >= 0) & (df["MonthlyCharges"] <= 200)
-        ).all(),
+        "valid_monthly_charges": ((df["MonthlyCharges"] >= 0) & (df["MonthlyCharges"] <= 200)).all(),
         "valid_total_charges": (df["TotalCharges"] >= 0).all(),
-        "valid_contract": df["Contract"]
-        .isin(["Month-to-month", "One year", "Two year"])
-        .all(),
-        "valid_internet": df["InternetService"]
-        .isin(["DSL", "Fiber optic", "No"])
-        .all(),
+        "valid_contract": df["Contract"].isin(["Month-to-month", "One year", "Two year"]).all(),
+        "valid_internet": df["InternetService"].isin(["DSL", "Fiber optic", "No"]).all(),
         "valid_payment": df["PaymentMethod"]
         .isin(
             [
@@ -309,12 +273,8 @@ def validate_data() -> Tuple[pd.DataFrame, bool]:
         df_ch["pipeline_run_id"] = run_id
 
         # Ensure correct types for ClickHouse
-        df_ch["TotalCharges"] = pd.to_numeric(
-            df_ch["TotalCharges"], errors="coerce"
-        ).fillna(0.0)
-        df_ch["MonthlyCharges"] = pd.to_numeric(
-            df_ch["MonthlyCharges"], errors="coerce"
-        ).fillna(0.0)
+        df_ch["TotalCharges"] = pd.to_numeric(df_ch["TotalCharges"], errors="coerce").fillna(0.0)
+        df_ch["MonthlyCharges"] = pd.to_numeric(df_ch["MonthlyCharges"], errors="coerce").fillna(0.0)
         df_ch["SeniorCitizen"] = df_ch["SeniorCitizen"].astype("int8")
 
         validated_table = os.getenv("CLICKHOUSE_VALIDATED_TABLE", "churn_validated")
@@ -323,18 +283,13 @@ def validate_data() -> Tuple[pd.DataFrame, bool]:
             table=validated_table,
             pipeline_run_id=run_id,
         )
-        logger.success(
-            f"🏠 ClickHouse: Inserted {rows_inserted} validated rows → "
-            f"churn_mlops.{validated_table}"
-        )
+        logger.success(f"🏠 ClickHouse: Inserted {rows_inserted} validated rows → " f"churn_mlops.{validated_table}")
     except Exception as e:
         logger.error(f"❌ ClickHouse insertion failed: {e}")
         logger.warning("⚠️  Continuing without ClickHouse storage...")
 
     # ── Emit COMPLETE lineage event ────────────────────────────────────────────
-    emit_validation_lineage(
-        run_id, "COMPLETE", str(raw_path), success=validation_success
-    )
+    emit_validation_lineage(run_id, "COMPLETE", str(raw_path), success=validation_success)
 
     # ── Try Great Expectations HTML report ────────────────────────────────────
     try:
@@ -371,12 +326,8 @@ def _run_ge_checkpoint(df: pd.DataFrame, suite_name: str, run_id: str) -> None:
         validator.expect_table_row_count_to_be_between(min_value=1000, max_value=100000)
         validator.expect_column_values_to_not_be_null("customerID")
         validator.expect_column_values_to_be_in_set("Churn", value_set=["Yes", "No"])
-        validator.expect_column_values_to_be_between(
-            "tenure", min_value=0, max_value=120
-        )
-        validator.expect_column_values_to_be_between(
-            "MonthlyCharges", min_value=0, max_value=200
-        )
+        validator.expect_column_values_to_be_between("tenure", min_value=0, max_value=120)
+        validator.expect_column_values_to_be_between("MonthlyCharges", min_value=0, max_value=200)
         validator.save_expectation_suite(discard_failed_expectations=False)
 
         results = validator.validate()
@@ -393,10 +344,7 @@ def _run_ge_checkpoint(df: pd.DataFrame, suite_name: str, run_id: str) -> None:
         with open(latest_file, "w") as f:
             json.dump(results.to_json_dict(), f, indent=2)
 
-        success_rate = (
-            results.statistics["successful_expectations"]
-            / results.statistics["evaluated_expectations"]
-        )
+        success_rate = results.statistics["successful_expectations"] / results.statistics["evaluated_expectations"]
         logger.info(
             f"📋 GE Results: {results.statistics['successful_expectations']}/"
             f"{results.statistics['evaluated_expectations']} passed "

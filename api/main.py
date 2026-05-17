@@ -67,9 +67,7 @@ CHURN_PROBABILITY = Histogram(
     buckets=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
 )
 ACTIVE_REQUESTS = Gauge("churn_active_requests", "Number of active requests")
-MODEL_VERSION_GAUGE = Gauge(
-    "churn_model_version", "Current model version", ["model_name"]
-)
+MODEL_VERSION_GAUGE = Gauge("churn_model_version", "Current model version", ["model_name"])
 DATA_DRIFT_SCORE = Gauge("churn_drift_score", "Latest data drift score")
 
 
@@ -200,9 +198,7 @@ class ModelState:
             client = mlflow.tracking.MlflowClient()
             versions = client.get_latest_versions(model_name, stages=[model_stage])
             cls.model_version = versions[0].version if versions else "1"
-            logger.success(
-                f"✅ Model loaded from MLflow: {model_name} v{cls.model_version}"
-            )
+            logger.success(f"✅ Model loaded from MLflow: {model_name} v{cls.model_version}")
         except Exception as e:
             logger.warning(f"⚠️  MLflow load failed ({e}), loading from local pkl...")
             pkl_path = Path("artifacts/models/best_model.pkl")
@@ -221,14 +217,10 @@ class ModelState:
             with open(fc_path) as f:
                 cls.feature_cols = json.load(f)
         logger.info(f"📋 Feature columns: {len(cls.feature_cols)}")
-        MODEL_VERSION_GAUGE.labels(model_name=cls.model_name).set(
-            float(cls.model_version.replace("local", "0"))
-        )
+        MODEL_VERSION_GAUGE.labels(model_name=cls.model_name).set(float(cls.model_version.replace("local", "0")))
 
 
-def customer_to_features(
-    customer: CustomerFeatures, feature_cols: List[str]
-) -> pd.DataFrame:
+def customer_to_features(customer: CustomerFeatures, feature_cols: List[str]) -> pd.DataFrame:
     """Convert CustomerFeatures to model input DataFrame."""
     data = customer.model_dump(exclude={"customerID"})
 
@@ -344,14 +336,10 @@ async def predict(
         # Check if we need to fetch features from Feast
         # We fetch from Feast if only customerID is provided (most other fields are None)
         input_data = customer.model_dump()
-        filled_fields = [
-            k for k, v in input_data.items() if v is not None and k != "customerID"
-        ]
+        filled_fields = [k for k, v in input_data.items() if v is not None and k != "customerID"]
 
         if len(filled_fields) == 0 and ModelState.fs:
-            logger.info(
-                f"🔍 Fetching features from Feast for customer: {customer.customerID}"
-            )
+            logger.info(f"🔍 Fetching features from Feast for customer: {customer.customerID}")
             try:
                 feature_vector = ModelState.fs.get_online_features(
                     features=[
@@ -495,9 +483,7 @@ async def model_info():
 async def get_latest_drift():
     """Get latest Evidently drift report summary."""
     report_dir = Path("artifacts/drift_reports")
-    reports = (
-        sorted(report_dir.glob("*.json"), reverse=True) if report_dir.exists() else []
-    )
+    reports = sorted(report_dir.glob("*.json"), reverse=True) if report_dir.exists() else []
     if not reports:
         return {"message": "No drift reports available yet."}
     with open(reports[0]) as f:

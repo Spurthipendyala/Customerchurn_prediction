@@ -55,17 +55,13 @@ def run_drift_detection(
             database = os.getenv("CLICKHOUSE_DATABASE", "churn_mlops")
             processed_table = os.getenv("CLICKHOUSE_PROCESSED_TABLE", "churn_processed")
             current_data = ch.get_latest_processed_data(processed_table)
-            logger.info(
-                f"📂 Current data loaded from ClickHouse: {len(current_data)} rows"
-            )
+            logger.info(f"📂 Current data loaded from ClickHouse: {len(current_data)} rows")
         except Exception as e:
             logger.warning(f"⚠️  ClickHouse unavailable ({e}), using processed CSV")
             proc_path = Path(params["data"]["processed_path"])
             current_data = pd.read_csv(proc_path)
             # Simulate production drift by sampling a random portion
-            current_data = current_data.sample(
-                n=min(500, len(current_data)), random_state=42
-            )
+            current_data = current_data.sample(n=min(500, len(current_data)), random_state=42)
 
     # ── Feature columns for drift analysis ────────────────────────────────────
     numeric_features = [
@@ -101,9 +97,7 @@ def run_drift_detection(
 
     # Align columns
     common_cols = [
-        c
-        for c in numeric_features + categorical_features
-        if c in reference_data.columns and c in current_data.columns
+        c for c in numeric_features + categorical_features if c in reference_data.columns and c in current_data.columns
     ]
     ref_subset = reference_data[common_cols].copy()
     cur_subset = current_data[common_cols].copy()
@@ -145,18 +139,12 @@ def run_drift_detection(
     try:
         drift_result = json_metrics.get("metrics", [])
         dataset_drift = next(
-            (
-                m
-                for m in drift_result
-                if "DatasetDriftMetric" in str(m.get("metric", ""))
-            ),
+            (m for m in drift_result if "DatasetDriftMetric" in str(m.get("metric", ""))),
             {},
         )
         drift_score = dataset_drift.get("result", {}).get("drift_share", 0.0)
         n_drifted = dataset_drift.get("result", {}).get("number_of_drifted_columns", 0)
-        n_features = dataset_drift.get("result", {}).get(
-            "number_of_columns", len(common_cols)
-        )
+        n_features = dataset_drift.get("result", {}).get("number_of_columns", len(common_cols))
         drift_detected = drift_score >= params["monitoring"]["drift_threshold"]
     except Exception:
         drift_score = 0.0
@@ -212,10 +200,7 @@ def run_drift_detection(
         json.dump(summary, f, indent=2)
 
     status = "🚨 DRIFT DETECTED" if drift_detected else "✅ No significant drift"
-    logger.info(
-        f"{status}: score={drift_score:.4f} | "
-        f"{n_drifted}/{n_features} features drifted"
-    )
+    logger.info(f"{status}: score={drift_score:.4f} | " f"{n_drifted}/{n_features} features drifted")
 
     # ── Automated Retraining ──────────────────────────────────────────────────
     if params["monitoring"].get("auto_retrain", False):

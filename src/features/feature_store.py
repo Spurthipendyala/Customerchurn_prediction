@@ -40,8 +40,7 @@ def prepare_feature_data() -> None:
         database = os.getenv("CLICKHOUSE_DATABASE", "churn_mlops")
         processed_table = os.getenv("CLICKHOUSE_PROCESSED_TABLE", "churn_processed")
         df = ch.query_to_dataframe(
-            f"SELECT * FROM {database}.{processed_table} "
-            "ORDER BY ingested_at DESC LIMIT 10000"
+            f"SELECT * FROM {database}.{processed_table} " "ORDER BY ingested_at DESC LIMIT 10000"
         )
         logger.success("✅ Feature data loaded from ClickHouse")
     except Exception as e:

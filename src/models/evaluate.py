@@ -39,9 +39,7 @@ def evaluate_model():
     params["data"]["target_column"]
 
     # Drop non-feature columns
-    feature_cols = [
-        c for c in df.columns if c not in ["customerID", "Churn", "tenure_group"]
-    ]
+    feature_cols = [c for c in df.columns if c not in ["customerID", "Churn", "tenure_group"]]
     X = df[feature_cols]
     y = df["Churn"]
 
@@ -88,15 +86,11 @@ def evaluate_model():
 
     # ROC curve
     fpr, tpr, _ = roc_curve(y_test, y_proba)
-    pd.DataFrame({"fpr": fpr, "tpr": tpr}).to_csv(
-        plots_dir / "roc_curve.csv", index=False
-    )
+    pd.DataFrame({"fpr": fpr, "tpr": tpr}).to_csv(plots_dir / "roc_curve.csv", index=False)
 
     # PR curve
     precision, recall, _ = precision_recall_curve(y_test, y_proba)
-    pd.DataFrame({"precision": precision, "recall": recall}).to_csv(
-        plots_dir / "pr_curve.csv", index=False
-    )
+    pd.DataFrame({"precision": precision, "recall": recall}).to_csv(plots_dir / "pr_curve.csv", index=False)
 
     logger.success("✅ Evaluation complete. Metrics and plots saved.")
 
