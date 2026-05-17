@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: churn-frontend
-          image: ghcr.io/spurthipendyala/customerchurn_prediction/churn-frontend:sha-f6a0664
+          image: ghcr.io/spurthipendyala/customerchurn_prediction/churn-frontend:sha-724d50f
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
