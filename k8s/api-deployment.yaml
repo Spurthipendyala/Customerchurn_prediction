@@ -36,6 +36,8 @@ spec:
           ports:
             - containerPort: 8000
           env:
+            - name: MLFLOW_HTTP_REQUEST_TIMEOUT
+              value: "5"
             - name: MLFLOW_TRACKING_URI
               valueFrom:
                 configMapKeyRef:

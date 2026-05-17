@@ -179,6 +179,7 @@ class ModelState:
     def load(cls) -> None:
         tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5001")
         mlflow.set_tracking_uri(tracking_uri)
+        os.environ["MLFLOW_HTTP_REQUEST_TIMEOUT"] = "5"
         model_name = os.getenv("MLFLOW_REGISTERED_MODEL_NAME", "churn_classifier")
         model_stage = os.getenv("MODEL_STAGE", "Production")
 
