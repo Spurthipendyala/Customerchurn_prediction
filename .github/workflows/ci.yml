@@ -152,7 +152,7 @@ jobs:
     needs: train-model
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -212,16 +212,17 @@ jobs:
         run: |
           API_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/churn-api:sha-${{ github.sha }}"
           FE_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/churn-frontend:sha-${{ github.sha }}"
-          
+
           # Update API deployment
           sed -i "s|image: .*churn-api.*|image: ${API_IMAGE}|g" k8s/api-deployment.yaml
-          
+
           # Update Frontend deployment
           sed -i "s|image: .*churn-frontend.*|image: ${FE_IMAGE}|g" k8s/frontend-deployment.yaml
-          
-          # Commit and push changes
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+
+          # Commit and push changes with token auth
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git add k8s/*.yaml
           git diff --staged --quiet || (git commit -m "ci: update image tags to sha-${{ github.sha }}" && git push)
 
