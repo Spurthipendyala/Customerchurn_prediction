@@ -2,33 +2,38 @@
 Data ingestion module with OpenLineage tracking.
 Copies raw CSV into DVC-tracked data/raw/ and emits lineage events to Marquez.
 """
-import os
-import shutil
+
 import hashlib
+import os
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
 import yaml
-from loguru import logger
 from dotenv import load_dotenv
+from loguru import logger
 
 load_dotenv()
 
 # ─── OpenLineage ─────────────────────────────────────────────────────────────
 try:
-    from openlineage.client import OpenLineageClient, set_producer
-    from openlineage.client.run import (
-        RunEvent, RunState, Run, Job, Dataset,
-        InputDataset, OutputDataset
-    )
+    from openlineage.client import OpenLineageClient
     from openlineage.client.facet import (
-        SchemaDatasetFacet, SchemaField,
-        SourceCodeLocationJobFacet,
-        DataQualityMetricsInputDatasetFacet,
         DataSourceDatasetFacet,
+        SchemaDatasetFacet,
+        SchemaField,
+        SourceCodeLocationJobFacet,
     )
+    from openlineage.client.run import (
+        InputDataset,
+        Job,
+        OutputDataset,
+        Run,
+        RunEvent,
+        RunState,
+    )
+
     OPENLINEAGE_AVAILABLE = True
 except ImportError:
     OPENLINEAGE_AVAILABLE = False
@@ -83,8 +88,7 @@ def emit_lineage_event(
                     ]
                 ),
                 "dataSource": DataSourceDatasetFacet(
-                    name="telco_churn_csv",
-                    uri=f"file://{Path(input_path).absolute()}"
+                    name="telco_churn_csv", uri=f"file://{Path(input_path).absolute()}"
                 ),
             },
         )
@@ -186,7 +190,7 @@ def ingest_data() -> pd.DataFrame:
 
     # ── Log summary statistics ────────────────────────────────────────────────
     churn_rate = df["Churn"].value_counts(normalize=True).get("Yes", 0) * 100
-    logger.info(f"📈 Dataset Stats:")
+    logger.info("📈 Dataset Stats:")
     logger.info(f"   Rows: {len(df)} | Columns: {len(df.columns)}")
     logger.info(f"   Churn Rate: {churn_rate:.1f}%")
     logger.info(f"   Tenure range: {df['tenure'].min()}–{df['tenure'].max()} months")

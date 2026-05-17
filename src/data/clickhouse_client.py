@@ -2,12 +2,14 @@
 ClickHouse client utility for churn MLOps pipeline.
 Handles connections, table creation, and data ingestion.
 """
+
 import os
 from typing import Optional
-import pandas as pd
+
 import clickhouse_connect
-from loguru import logger
+import pandas as pd
 from dotenv import load_dotenv
+from loguru import logger
 
 load_dotenv()
 
@@ -164,7 +166,9 @@ class ClickHouseClient:
 
     def create_predictions_table(self, table_name: str = "churn_predictions") -> None:
         """Create the predictions logging table."""
-        ddl = self.CREATE_PREDICTIONS_TABLE.format(database=self.database, table=table_name)
+        ddl = self.CREATE_PREDICTIONS_TABLE.format(
+            database=self.database, table=table_name
+        )
         self.client.command(ddl)
         logger.info(f"✅ Table '{self.database}.{table_name}' ready.")
 
@@ -212,9 +216,7 @@ class ClickHouseClient:
 
     def _get_row_count(self, table: str) -> int:
         """Get current row count for a table."""
-        result = self.client.query(
-            f"SELECT count() FROM {self.database}.{table}"
-        )
+        result = self.client.query(f"SELECT count() FROM {self.database}.{table}")
         return result.result_rows[0][0] if result.result_rows else 0
 
     def query_to_dataframe(self, sql: str) -> pd.DataFrame:
@@ -225,7 +227,7 @@ class ClickHouseClient:
     def get_latest_processed_data(self, table: Optional[str] = None) -> pd.DataFrame:
         """Fetch latest batch of processed data for monitoring."""
         table = table or os.getenv("CLICKHOUSE_PROCESSED_TABLE", "churn_processed")
-        sql = f"""
+        sql = """
         SELECT *
         FROM {self.database}.{table}
         WHERE ingested_at = (
@@ -234,10 +236,12 @@ class ClickHouseClient:
         """
         return self.query_to_dataframe(sql)
 
-    def get_reference_data(self, table: Optional[str] = None, limit: int = 1000) -> pd.DataFrame:
+    def get_reference_data(
+        self, table: Optional[str] = None, limit: int = 1000
+    ) -> pd.DataFrame:
         """Fetch reference dataset for drift monitoring."""
         table = table or os.getenv("CLICKHOUSE_PROCESSED_TABLE", "churn_processed")
-        sql = f"""
+        sql = """
         SELECT * FROM {self.database}.{table}
         ORDER BY ingested_at ASC
         LIMIT {limit}

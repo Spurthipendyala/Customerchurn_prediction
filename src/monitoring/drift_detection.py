@@ -2,18 +2,18 @@
 Evidently AI drift detection and model monitoring.
 Generates HTML reports and JSON metrics, exports to Prometheus and ClickHouse.
 """
-import os
+
 import json
+import os
 import uuid
-from pathlib import Path
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Optional
 
 import pandas as pd
-import numpy as np
 import yaml
-from loguru import logger
 from dotenv import load_dotenv
+from loguru import logger
 
 from src.monitoring.retraining_trigger import check_and_trigger
 
@@ -34,10 +34,8 @@ def run_drift_detection(
     Returns dict with drift metrics and saves HTML + JSON reports.
     """
     from evidently import Report
+    from evidently.metrics import DatasetMissingValueCount
     from evidently.presets import DataDriftPreset
-    from evidently.metrics import (
-        DatasetMissingValueCount, RowCount
-    )
 
     params = load_params()
     run_id = str(uuid.uuid4())[:8]
@@ -52,11 +50,14 @@ def run_drift_detection(
         # Try ClickHouse first, fallback to processed CSV
         try:
             from src.data.clickhouse_client import get_clickhouse_client
+
             ch = get_clickhouse_client()
             database = os.getenv("CLICKHOUSE_DATABASE", "churn_mlops")
             processed_table = os.getenv("CLICKHOUSE_PROCESSED_TABLE", "churn_processed")
             current_data = ch.get_latest_processed_data(processed_table)
-            logger.info(f"📂 Current data loaded from ClickHouse: {len(current_data)} rows")
+            logger.info(
+                f"📂 Current data loaded from ClickHouse: {len(current_data)} rows"
+            )
         except Exception as e:
             logger.warning(f"⚠️  ClickHouse unavailable ({e}), using processed CSV")
             proc_path = Path(params["data"]["processed_path"])
@@ -68,32 +69,54 @@ def run_drift_detection(
 
     # ── Feature columns for drift analysis ────────────────────────────────────
     numeric_features = [
-        "tenure", "MonthlyCharges", "TotalCharges",
-        "charges_per_month", "num_services"
+        "tenure",
+        "MonthlyCharges",
+        "TotalCharges",
+        "charges_per_month",
+        "num_services",
     ]
     categorical_features = [
-        "SeniorCitizen", "Partner", "Dependents", "PhoneService",
-        "MultipleLines", "OnlineSecurity", "OnlineBackup", "DeviceProtection",
-        "TechSupport", "StreamingTV", "StreamingMovies", "PaperlessBilling",
-        "gender_Male", "InternetService_Fiber", "InternetService_No",
-        "Contract_OneYear", "Contract_TwoYear",
-        "PaymentMethod_CreditCard", "PaymentMethod_ElecCheck",
-        "PaymentMethod_MailedCheck", "has_internet"
+        "SeniorCitizen",
+        "Partner",
+        "Dependents",
+        "PhoneService",
+        "MultipleLines",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "DeviceProtection",
+        "TechSupport",
+        "StreamingTV",
+        "StreamingMovies",
+        "PaperlessBilling",
+        "gender_Male",
+        "InternetService_Fiber",
+        "InternetService_No",
+        "Contract_OneYear",
+        "Contract_TwoYear",
+        "PaymentMethod_CreditCard",
+        "PaymentMethod_ElecCheck",
+        "PaymentMethod_MailedCheck",
+        "has_internet",
     ]
 
     # Align columns
-    common_cols = [c for c in numeric_features + categorical_features
-                   if c in reference_data.columns and c in current_data.columns]
+    common_cols = [
+        c
+        for c in numeric_features + categorical_features
+        if c in reference_data.columns and c in current_data.columns
+    ]
     ref_subset = reference_data[common_cols].copy()
     cur_subset = current_data[common_cols].copy()
 
     # ── Run Evidently Data Drift Report ───────────────────────────────────────
     logger.info("🔍 Running Evidently drift analysis...")
 
-    drift_report = Report(metrics=[
-        DataDriftPreset(),
-        DatasetMissingValueCount(),
-    ])
+    drift_report = Report(
+        metrics=[
+            DataDriftPreset(),
+            DatasetMissingValueCount(),
+        ]
+    )
     snapshot = drift_report.run(reference_data=ref_subset, current_data=cur_subset)
 
     # ── Save Reports ──────────────────────────────────────────────────────────
@@ -122,12 +145,18 @@ def run_drift_detection(
     try:
         drift_result = json_metrics.get("metrics", [])
         dataset_drift = next(
-            (m for m in drift_result if "DatasetDriftMetric" in str(m.get("metric", ""))),
-            {}
+            (
+                m
+                for m in drift_result
+                if "DatasetDriftMetric" in str(m.get("metric", ""))
+            ),
+            {},
         )
         drift_score = dataset_drift.get("result", {}).get("drift_share", 0.0)
         n_drifted = dataset_drift.get("result", {}).get("number_of_drifted_columns", 0)
-        n_features = dataset_drift.get("result", {}).get("number_of_columns", len(common_cols))
+        n_features = dataset_drift.get("result", {}).get(
+            "number_of_columns", len(common_cols)
+        )
         drift_detected = drift_score >= params["monitoring"]["drift_threshold"]
     except Exception:
         drift_score = 0.0
@@ -138,6 +167,7 @@ def run_drift_detection(
     # ── Update Prometheus gauge ───────────────────────────────────────────────
     try:
         from prometheus_client import Gauge
+
         gauge = Gauge("churn_drift_score", "Latest data drift score")
         gauge.set(drift_score)
     except Exception:
@@ -146,6 +176,7 @@ def run_drift_detection(
     # ── Log to ClickHouse metrics table ───────────────────────────────────────
     try:
         from src.data.clickhouse_client import get_clickhouse_client
+
         ch = get_clickhouse_client()
         database = os.getenv("CLICKHOUSE_DATABASE", "churn_mlops")
         for metric_name, metric_value in [
@@ -181,8 +212,10 @@ def run_drift_detection(
         json.dump(summary, f, indent=2)
 
     status = "🚨 DRIFT DETECTED" if drift_detected else "✅ No significant drift"
-    logger.info(f"{status}: score={drift_score:.4f} | "
-                f"{n_drifted}/{n_features} features drifted")
+    logger.info(
+        f"{status}: score={drift_score:.4f} | "
+        f"{n_drifted}/{n_features} features drifted"
+    )
 
     # ── Automated Retraining ──────────────────────────────────────────────────
     if params["monitoring"].get("auto_retrain", False):
@@ -193,6 +226,6 @@ def run_drift_detection(
 
 if __name__ == "__main__":
     result = run_drift_detection()
-    print(f"\nDrift Report:")
+    print("\nDrift Report:")
     for k, v in result.items():
         print(f"  {k}: {v}")

@@ -1,9 +1,11 @@
 """
 Feast feature definitions for Telco Churn prediction.
 """
+
 from datetime import timedelta
-from feast import Entity, FeatureView, Field, FileSource, FeatureService
-from feast.types import String, Int32, Float64
+
+from feast import Entity, FeatureService, FeatureView, Field, FileSource
+from feast.types import Float64, Int32, String
 
 # ─── Entity ──────────────────────────────────────────────────────────────────
 customer = Entity(
@@ -25,12 +27,12 @@ customer_demographics = FeatureView(
     entities=[customer],
     ttl=timedelta(days=365),
     schema=[
-        Field(name="tenure",        dtype=Int32),
+        Field(name="tenure", dtype=Int32),
         Field(name="SeniorCitizen", dtype=Int32),
-        Field(name="Partner",       dtype=Int32),
-        Field(name="Dependents",    dtype=Int32),
-        Field(name="gender_Male",   dtype=Int32),
-        Field(name="tenure_group",  dtype=String),
+        Field(name="Partner", dtype=Int32),
+        Field(name="Dependents", dtype=Int32),
+        Field(name="gender_Male", dtype=Int32),
+        Field(name="tenure_group", dtype=String),
     ],
     source=churn_source,
     description="Customer demographic features",
@@ -43,18 +45,18 @@ customer_services = FeatureView(
     entities=[customer],
     ttl=timedelta(days=365),
     schema=[
-        Field(name="PhoneService",          dtype=Int32),
-        Field(name="MultipleLines",         dtype=Int32),
+        Field(name="PhoneService", dtype=Int32),
+        Field(name="MultipleLines", dtype=Int32),
         Field(name="InternetService_Fiber", dtype=Int32),
-        Field(name="InternetService_No",    dtype=Int32),
-        Field(name="OnlineSecurity",        dtype=Int32),
-        Field(name="OnlineBackup",          dtype=Int32),
-        Field(name="DeviceProtection",      dtype=Int32),
-        Field(name="TechSupport",           dtype=Int32),
-        Field(name="StreamingTV",           dtype=Int32),
-        Field(name="StreamingMovies",       dtype=Int32),
-        Field(name="has_internet",          dtype=Int32),
-        Field(name="num_services",          dtype=Int32),
+        Field(name="InternetService_No", dtype=Int32),
+        Field(name="OnlineSecurity", dtype=Int32),
+        Field(name="OnlineBackup", dtype=Int32),
+        Field(name="DeviceProtection", dtype=Int32),
+        Field(name="TechSupport", dtype=Int32),
+        Field(name="StreamingTV", dtype=Int32),
+        Field(name="StreamingMovies", dtype=Int32),
+        Field(name="has_internet", dtype=Int32),
+        Field(name="num_services", dtype=Int32),
     ],
     source=churn_source,
     description="Customer service subscription features",
@@ -67,15 +69,15 @@ customer_billing = FeatureView(
     entities=[customer],
     ttl=timedelta(days=365),
     schema=[
-        Field(name="MonthlyCharges",             dtype=Float64),
-        Field(name="TotalCharges",               dtype=Float64),
-        Field(name="charges_per_month",          dtype=Float64),
-        Field(name="PaperlessBilling",           dtype=Int32),
-        Field(name="Contract_OneYear",           dtype=Int32),
-        Field(name="Contract_TwoYear",           dtype=Int32),
-        Field(name="PaymentMethod_CreditCard",   dtype=Int32),
-        Field(name="PaymentMethod_ElecCheck",    dtype=Int32),
-        Field(name="PaymentMethod_MailedCheck",  dtype=Int32),
+        Field(name="MonthlyCharges", dtype=Float64),
+        Field(name="TotalCharges", dtype=Float64),
+        Field(name="charges_per_month", dtype=Float64),
+        Field(name="PaperlessBilling", dtype=Int32),
+        Field(name="Contract_OneYear", dtype=Int32),
+        Field(name="Contract_TwoYear", dtype=Int32),
+        Field(name="PaymentMethod_CreditCard", dtype=Int32),
+        Field(name="PaymentMethod_ElecCheck", dtype=Int32),
+        Field(name="PaymentMethod_MailedCheck", dtype=Int32),
     ],
     source=churn_source,
     description="Customer billing and contract features",

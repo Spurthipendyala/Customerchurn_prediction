@@ -3,14 +3,14 @@ Feast Feature Store definitions for Telco Churn MLOps.
 Defines entities, feature views, and feature services.
 Reads from ClickHouse-backed processed data (parquet offline store).
 """
+
 import os
 from pathlib import Path
-from datetime import timedelta
 
 import pandas as pd
 import yaml
-from loguru import logger
 from dotenv import load_dotenv
+from loguru import logger
 
 load_dotenv()
 
@@ -35,12 +35,13 @@ def prepare_feature_data() -> None:
     # Try loading from ClickHouse first, fallback to CSV
     try:
         from src.data.clickhouse_client import get_clickhouse_client
+
         ch = get_clickhouse_client()
         database = os.getenv("CLICKHOUSE_DATABASE", "churn_mlops")
         processed_table = os.getenv("CLICKHOUSE_PROCESSED_TABLE", "churn_processed")
         df = ch.query_to_dataframe(
             f"SELECT * FROM {database}.{processed_table} "
-            f"ORDER BY ingested_at DESC LIMIT 10000"
+            "ORDER BY ingested_at DESC LIMIT 10000"
         )
         logger.success("✅ Feature data loaded from ClickHouse")
     except Exception as e:
@@ -49,6 +50,7 @@ def prepare_feature_data() -> None:
 
     # Feast requires event_timestamp and created_timestamp
     from datetime import datetime, timezone
+
     now = datetime.now(timezone.utc)
     df["event_timestamp"] = now
     df["created_timestamp"] = now
@@ -78,14 +80,13 @@ def create_feature_repo() -> None:
             "redis_type": "redis",
             "host": os.getenv("REDIS_HOST", "localhost"),
             "port": int(os.getenv("REDIS_PORT", 6379)),
-            "db": 0
+            "db": 0,
         },
-        "offline_store": {
-            "type": "file"
-        },
-        "entity_key_serialization_version": 2
+        "offline_store": {"type": "file"},
+        "entity_key_serialization_version": 2,
     }
     import yaml as _yaml
+
     with open(repo_dir / "feature_store.yaml", "w", encoding="utf-8") as f:
         _yaml.dump(feature_store_config, f, default_flow_style=False)
     logger.info("✅ feature_store.yaml created")
@@ -196,11 +197,13 @@ def materialize_features() -> None:
     """Apply and materialize features to the online store."""
     try:
         from feast import FeatureStore
+
         repo_dir = Path("src/features/feature_repo")
         store = FeatureStore(repo_path=str(repo_dir))
         store.apply([])  # Apply repo
 
-        from datetime import datetime, timezone, timedelta
+        from datetime import datetime, timedelta, timezone
+
         end_date = datetime.now(timezone.utc)
         start_date = end_date - timedelta(days=365)
         store.materialize(start_date=start_date, end_date=end_date)

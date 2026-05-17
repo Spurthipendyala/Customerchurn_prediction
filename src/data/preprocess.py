@@ -3,18 +3,18 @@ Data Preprocessing & Feature Engineering.
 Transforms validated data and stores processed features in ClickHouse.
 Also emits OpenLineage events for full data lineage tracking.
 """
-import os
-import uuid
-import subprocess
-from pathlib import Path
-from datetime import datetime, timezone
 
-import pandas as pd
+import os
+import subprocess
+import uuid
+from datetime import datetime, timezone
+from pathlib import Path
+
 import numpy as np
+import pandas as pd
 import yaml
-from loguru import logger
 from dotenv import load_dotenv
-from sklearn.preprocessing import LabelEncoder
+from loguru import logger
 
 from src.data.clickhouse_client import get_clickhouse_client
 
@@ -31,33 +31,46 @@ def get_dvc_commit_hash() -> str:
     try:
         result = subprocess.run(
             ["git", "rev-parse", "--short", "HEAD"],
-            capture_output=True, text=True, check=True
+            capture_output=True,
+            text=True,
+            check=True,
         )
         return result.stdout.strip()
     except Exception:
         return "unknown"
 
 
-def emit_preprocessing_lineage(run_id: str, state: str, input_path: str, output_path: str) -> None:
+def emit_preprocessing_lineage(
+    run_id: str, state: str, input_path: str, output_path: str
+) -> None:
     """Emit OpenLineage event for preprocessing step."""
     try:
         from openlineage.client import OpenLineageClient
-        from openlineage.client.run import RunEvent, RunState, Run, Job, InputDataset, OutputDataset
         from openlineage.client.facet import SchemaDatasetFacet, SchemaField
+        from openlineage.client.run import (
+            InputDataset,
+            Job,
+            OutputDataset,
+            Run,
+            RunEvent,
+            RunState,
+        )
 
         ol_url = os.getenv("OPENLINEAGE_URL", "http://localhost:5000")
         ns = os.getenv("OPENLINEAGE_NAMESPACE", "churn_mlops_pipeline")
         client = OpenLineageClient(url=ol_url)
 
-        output_schema = SchemaDatasetFacet(fields=[
-            SchemaField("customerID", "STRING"),
-            SchemaField("tenure", "INTEGER"),
-            SchemaField("MonthlyCharges", "DOUBLE"),
-            SchemaField("TotalCharges", "DOUBLE"),
-            SchemaField("Churn", "INTEGER"),
-            SchemaField("num_services", "INTEGER"),
-            SchemaField("charges_per_month", "DOUBLE"),
-        ])
+        output_schema = SchemaDatasetFacet(
+            fields=[
+                SchemaField("customerID", "STRING"),
+                SchemaField("tenure", "INTEGER"),
+                SchemaField("MonthlyCharges", "DOUBLE"),
+                SchemaField("TotalCharges", "DOUBLE"),
+                SchemaField("Churn", "INTEGER"),
+                SchemaField("num_services", "INTEGER"),
+                SchemaField("charges_per_month", "DOUBLE"),
+            ]
+        )
 
         event = RunEvent(
             eventType=RunState[state],
@@ -101,7 +114,9 @@ def preprocess_data() -> pd.DataFrame:
     reference_path = Path(params["data"]["reference_path"])
 
     logger.info(f"🔧 Starting preprocessing | run_id={run_id} | commit={dvc_hash}")
-    emit_preprocessing_lineage(run_id, "START", str(validated_path), str(processed_path))
+    emit_preprocessing_lineage(
+        run_id, "START", str(validated_path), str(processed_path)
+    )
 
     # ── Load validated data ───────────────────────────────────────────────────
     df = pd.read_csv(validated_path)
@@ -112,12 +127,22 @@ def preprocess_data() -> pd.DataFrame:
 
     # ── 2. Binary categorical encoding (Yes/No → 1/0) ─────────────────────────
     binary_cols = [
-        "Partner", "Dependents", "PhoneService", "PaperlessBilling",
-        "MultipleLines", "OnlineSecurity", "OnlineBackup",
-        "DeviceProtection", "TechSupport", "StreamingTV", "StreamingMovies"
+        "Partner",
+        "Dependents",
+        "PhoneService",
+        "PaperlessBilling",
+        "MultipleLines",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "DeviceProtection",
+        "TechSupport",
+        "StreamingTV",
+        "StreamingMovies",
     ]
     for col in binary_cols:
-        df[col] = df[col].map({"Yes": 1, "No": 0, "No phone service": 0, "No internet service": 0})
+        df[col] = df[col].map(
+            {"Yes": 1, "No": 0, "No phone service": 0, "No internet service": 0}
+        )
         df[col] = df[col].astype("int8")
 
     # ── 3. Gender encoding ────────────────────────────────────────────────────
@@ -125,7 +150,9 @@ def preprocess_data() -> pd.DataFrame:
     df.drop(columns=["gender"], inplace=True)
 
     # ── 4. InternetService one-hot ────────────────────────────────────────────
-    df["InternetService_Fiber"] = (df["InternetService"] == "Fiber optic").astype("int8")
+    df["InternetService_Fiber"] = (df["InternetService"] == "Fiber optic").astype(
+        "int8"
+    )
     df["InternetService_No"] = (df["InternetService"] == "No").astype("int8")
     df.drop(columns=["InternetService"], inplace=True)
 
@@ -135,9 +162,15 @@ def preprocess_data() -> pd.DataFrame:
     df.drop(columns=["Contract"], inplace=True)
 
     # ── 6. PaymentMethod one-hot ──────────────────────────────────────────────
-    df["PaymentMethod_CreditCard"] = (df["PaymentMethod"] == "Credit card (automatic)").astype("int8")
-    df["PaymentMethod_ElecCheck"] = (df["PaymentMethod"] == "Electronic check").astype("int8")
-    df["PaymentMethod_MailedCheck"] = (df["PaymentMethod"] == "Mailed check").astype("int8")
+    df["PaymentMethod_CreditCard"] = (
+        df["PaymentMethod"] == "Credit card (automatic)"
+    ).astype("int8")
+    df["PaymentMethod_ElecCheck"] = (df["PaymentMethod"] == "Electronic check").astype(
+        "int8"
+    )
+    df["PaymentMethod_MailedCheck"] = (df["PaymentMethod"] == "Mailed check").astype(
+        "int8"
+    )
     df.drop(columns=["PaymentMethod"], inplace=True)
 
     # ── 7. Feature Engineering ────────────────────────────────────────────────
@@ -156,9 +189,7 @@ def preprocess_data() -> pd.DataFrame:
 
     # Charges per month (ratio feature)
     df["charges_per_month"] = np.where(
-        df["tenure"] > 0,
-        df["TotalCharges"] / df["tenure"],
-        df["MonthlyCharges"]
+        df["tenure"] > 0, df["TotalCharges"] / df["tenure"], df["MonthlyCharges"]
     ).round(4)
 
     # Has internet service
@@ -166,22 +197,46 @@ def preprocess_data() -> pd.DataFrame:
 
     # Number of add-on services
     service_cols = [
-        "OnlineSecurity", "OnlineBackup", "DeviceProtection",
-        "TechSupport", "StreamingTV", "StreamingMovies"
+        "OnlineSecurity",
+        "OnlineBackup",
+        "DeviceProtection",
+        "TechSupport",
+        "StreamingTV",
+        "StreamingMovies",
     ]
     df["num_services"] = df[service_cols].sum(axis=1).astype("int8")
 
     # ── 8. Final column ordering ──────────────────────────────────────────────
     feature_cols = [
-        "customerID", "tenure", "MonthlyCharges", "TotalCharges",
-        "SeniorCitizen", "Partner", "Dependents", "PhoneService",
-        "MultipleLines", "OnlineSecurity", "OnlineBackup", "DeviceProtection",
-        "TechSupport", "StreamingTV", "StreamingMovies", "PaperlessBilling",
-        "gender_Male", "InternetService_Fiber", "InternetService_No",
-        "Contract_OneYear", "Contract_TwoYear",
-        "PaymentMethod_CreditCard", "PaymentMethod_ElecCheck", "PaymentMethod_MailedCheck",
-        "tenure_group", "charges_per_month", "has_internet", "num_services",
-        "Churn"
+        "customerID",
+        "tenure",
+        "MonthlyCharges",
+        "TotalCharges",
+        "SeniorCitizen",
+        "Partner",
+        "Dependents",
+        "PhoneService",
+        "MultipleLines",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "DeviceProtection",
+        "TechSupport",
+        "StreamingTV",
+        "StreamingMovies",
+        "PaperlessBilling",
+        "gender_Male",
+        "InternetService_Fiber",
+        "InternetService_No",
+        "Contract_OneYear",
+        "Contract_TwoYear",
+        "PaymentMethod_CreditCard",
+        "PaymentMethod_ElecCheck",
+        "PaymentMethod_MailedCheck",
+        "tenure_group",
+        "charges_per_month",
+        "has_internet",
+        "num_services",
+        "Churn",
     ]
     df = df[feature_cols]
 
@@ -194,7 +249,9 @@ def preprocess_data() -> pd.DataFrame:
     reference_path.parent.mkdir(parents=True, exist_ok=True)
     reference_df = df.sample(n=min(1000, len(df)), random_state=42)
     reference_df.to_csv(reference_path, index=False)
-    logger.info(f"📌 Reference dataset saved → {reference_path} ({len(reference_df)} rows)")
+    logger.info(
+        f"📌 Reference dataset saved → {reference_path} ({len(reference_df)} rows)"
+    )
 
     # ── 11. Store processed data in ClickHouse ────────────────────────────────
     try:
@@ -207,12 +264,29 @@ def preprocess_data() -> pd.DataFrame:
 
         # Ensure int8 for ClickHouse
         int8_cols = [
-            "SeniorCitizen", "Partner", "Dependents", "PhoneService", "MultipleLines",
-            "OnlineSecurity", "OnlineBackup", "DeviceProtection", "TechSupport",
-            "StreamingTV", "StreamingMovies", "PaperlessBilling", "gender_Male",
-            "InternetService_Fiber", "InternetService_No", "Contract_OneYear",
-            "Contract_TwoYear", "PaymentMethod_CreditCard", "PaymentMethod_ElecCheck",
-            "PaymentMethod_MailedCheck", "has_internet", "num_services", "Churn"
+            "SeniorCitizen",
+            "Partner",
+            "Dependents",
+            "PhoneService",
+            "MultipleLines",
+            "OnlineSecurity",
+            "OnlineBackup",
+            "DeviceProtection",
+            "TechSupport",
+            "StreamingTV",
+            "StreamingMovies",
+            "PaperlessBilling",
+            "gender_Male",
+            "InternetService_Fiber",
+            "InternetService_No",
+            "Contract_OneYear",
+            "Contract_TwoYear",
+            "PaymentMethod_CreditCard",
+            "PaymentMethod_ElecCheck",
+            "PaymentMethod_MailedCheck",
+            "has_internet",
+            "num_services",
+            "Churn",
         ]
         for col in int8_cols:
             if col in df_ch.columns:
@@ -240,15 +314,19 @@ def preprocess_data() -> pd.DataFrame:
         logger.warning("⚠️  Continuing without ClickHouse storage...")
 
     # ── 12. Emit COMPLETE lineage event ───────────────────────────────────────
-    emit_preprocessing_lineage(run_id, "COMPLETE", str(validated_path), str(processed_path))
+    emit_preprocessing_lineage(
+        run_id, "COMPLETE", str(validated_path), str(processed_path)
+    )
 
     # ── Log final summary ─────────────────────────────────────────────────────
     churn_rate = df["Churn"].mean()
-    logger.info(f"📊 Preprocessing Summary:")
+    logger.info("📊 Preprocessing Summary:")
     logger.info(f"   Input rows: {len(df)}")
     logger.info(f"   Output features: {len(df.columns) - 1}")
     logger.info(f"   Churn rate: {churn_rate:.2%}")
-    logger.info(f"   New features: tenure_group, charges_per_month, has_internet, num_services")
+    logger.info(
+        "   New features: tenure_group, charges_per_month, has_internet, num_services"
+    )
     logger.info(f"   Tenure groups: {df['tenure_group'].value_counts().to_dict()}")
     logger.info(f"   Avg services per customer: {df['num_services'].mean():.1f}")
 

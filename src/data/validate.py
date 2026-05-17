@@ -1,25 +1,23 @@
+import json
+
 """
 Data Validation using Great Expectations.
 Validates raw data, generates Data Docs, and stores validated data in ClickHouse.
 """
+
 import os
 import uuid
-from pathlib import Path
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Tuple
 
 import pandas as pd
 import yaml
-from loguru import logger
 from dotenv import load_dotenv
+from great_expectations.core.batch import RuntimeBatchRequest
+from loguru import logger
 
 import great_expectations as gx
-from great_expectations.core.batch import RuntimeBatchRequest
-from great_expectations.data_context.types.base import (
-    DataContextConfig,
-    FilesystemStoreBackendDefaults,
-)
-
 from src.data.clickhouse_client import get_clickhouse_client
 
 load_dotenv()
@@ -31,11 +29,19 @@ def load_params() -> dict:
 
 
 # ── OpenLineage lineage helper ───────────────────────────────────────────────
-def emit_validation_lineage(run_id: str, state: str, input_path: str, success: bool) -> None:
+def emit_validation_lineage(
+    run_id: str, state: str, input_path: str, success: bool
+) -> None:
     try:
         from openlineage.client import OpenLineageClient
-        from openlineage.client.run import RunEvent, RunState, Run, Job, InputDataset, OutputDataset
-        from openlineage.client.facet import SchemaDatasetFacet, SchemaField
+        from openlineage.client.run import (
+            InputDataset,
+            Job,
+            OutputDataset,
+            Run,
+            RunEvent,
+            RunState,
+        )
 
         ol_url = os.getenv("OPENLINEAGE_URL", "http://localhost:5000")
         ns = os.getenv("OPENLINEAGE_NAMESPACE", "churn_mlops_pipeline")
@@ -47,7 +53,11 @@ def emit_validation_lineage(run_id: str, state: str, input_path: str, success: b
             run=Run(runId=run_id),
             job=Job(namespace=ns, name="data_validation"),
             inputs=[InputDataset(namespace=ns, name=input_path)],
-            outputs=[OutputDataset(namespace=ns, name="clickhouse://churn_mlops.churn_validated")],
+            outputs=[
+                OutputDataset(
+                    namespace=ns, name="clickhouse://churn_mlops.churn_validated"
+                )
+            ],
             producer="https://github.com/your-org/customerchurn_mlops",
         )
         client.emit(event)
@@ -73,11 +83,27 @@ def build_expectation_suite(context, suite_name: str) -> None:
 
     # ── Schema & Completeness ────────────────────────────────────────────────
     required_columns = [
-        "customerID", "gender", "SeniorCitizen", "Partner", "Dependents",
-        "tenure", "PhoneService", "MultipleLines", "InternetService",
-        "OnlineSecurity", "OnlineBackup", "DeviceProtection", "TechSupport",
-        "StreamingTV", "StreamingMovies", "Contract", "PaperlessBilling",
-        "PaymentMethod", "MonthlyCharges", "TotalCharges", "Churn"
+        "customerID",
+        "gender",
+        "SeniorCitizen",
+        "Partner",
+        "Dependents",
+        "tenure",
+        "PhoneService",
+        "MultipleLines",
+        "InternetService",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "DeviceProtection",
+        "TechSupport",
+        "StreamingTV",
+        "StreamingMovies",
+        "Contract",
+        "PaperlessBilling",
+        "PaymentMethod",
+        "MonthlyCharges",
+        "TotalCharges",
+        "Churn",
     ]
     validator.expect_table_columns_to_match_ordered_list(column_list=required_columns)
     validator.expect_table_row_count_to_be_between(min_value=1000, max_value=100000)
@@ -89,11 +115,15 @@ def build_expectation_suite(context, suite_name: str) -> None:
 
     # ── gender ──────────────────────────────────────────────────────────────
     validator.expect_column_values_to_not_be_null(column="gender")
-    validator.expect_column_values_to_be_in_set(column="gender", value_set=["Male", "Female"])
+    validator.expect_column_values_to_be_in_set(
+        column="gender", value_set=["Male", "Female"]
+    )
 
     # ── SeniorCitizen ────────────────────────────────────────────────────────
     validator.expect_column_values_to_not_be_null(column="SeniorCitizen")
-    validator.expect_column_values_to_be_in_set(column="SeniorCitizen", value_set=[0, 1])
+    validator.expect_column_values_to_be_in_set(
+        column="SeniorCitizen", value_set=[0, 1]
+    )
 
     # ── Partner / Dependents ─────────────────────────────────────────────────
     for col in ["Partner", "Dependents", "PhoneService", "PaperlessBilling"]:
@@ -102,13 +132,21 @@ def build_expectation_suite(context, suite_name: str) -> None:
 
     # ── tenure ───────────────────────────────────────────────────────────────
     validator.expect_column_values_to_not_be_null(column="tenure")
-    validator.expect_column_values_to_be_between(column="tenure", min_value=0, max_value=120)
-    validator.expect_column_mean_to_be_between(column="tenure", min_value=10, max_value=50)
+    validator.expect_column_values_to_be_between(
+        column="tenure", min_value=0, max_value=120
+    )
+    validator.expect_column_mean_to_be_between(
+        column="tenure", min_value=10, max_value=50
+    )
 
     # ── MonthlyCharges ───────────────────────────────────────────────────────
     validator.expect_column_values_to_not_be_null(column="MonthlyCharges")
-    validator.expect_column_values_to_be_between(column="MonthlyCharges", min_value=0, max_value=200)
-    validator.expect_column_mean_to_be_between(column="MonthlyCharges", min_value=30, max_value=100)
+    validator.expect_column_values_to_be_between(
+        column="MonthlyCharges", min_value=0, max_value=200
+    )
+    validator.expect_column_mean_to_be_between(
+        column="MonthlyCharges", min_value=30, max_value=100
+    )
 
     # ── TotalCharges ─────────────────────────────────────────────────────────
     validator.expect_column_values_to_be_between(
@@ -132,8 +170,10 @@ def build_expectation_suite(context, suite_name: str) -> None:
     validator.expect_column_values_to_be_in_set(
         column="PaymentMethod",
         value_set=[
-            "Electronic check", "Mailed check",
-            "Bank transfer (automatic)", "Credit card (automatic)"
+            "Electronic check",
+            "Mailed check",
+            "Bank transfer (automatic)",
+            "Credit card (automatic)",
         ],
     )
 
@@ -155,7 +195,9 @@ def build_expectation_suite(context, suite_name: str) -> None:
     )
 
     validator.save_expectation_suite(discard_failed_expectations=False)
-    logger.success(f"✅ Expectation suite '{suite_name}' built with {len(suite.expectations)} expectations.")
+    logger.success(
+        f"✅ Expectation suite '{suite_name}' built with {len(suite.expectations)} expectations."
+    )
 
 
 def setup_ge_context():
@@ -205,7 +247,6 @@ def validate_data() -> Tuple[pd.DataFrame, bool]:
 
     # ── Run validation ────────────────────────────────────────────────────────
     validation_success = True
-    validation_results = {}
 
     # Manual validation checks (always run even if GE not configured)
     checks = {
@@ -214,14 +255,26 @@ def validate_data() -> Tuple[pd.DataFrame, bool]:
         "valid_gender": df["gender"].isin(["Male", "Female"]).all(),
         "valid_churn": df["Churn"].isin(["Yes", "No"]).all(),
         "valid_tenure": ((df["tenure"] >= 0) & (df["tenure"] <= 120)).all(),
-        "valid_monthly_charges": ((df["MonthlyCharges"] >= 0) & (df["MonthlyCharges"] <= 200)).all(),
+        "valid_monthly_charges": (
+            (df["MonthlyCharges"] >= 0) & (df["MonthlyCharges"] <= 200)
+        ).all(),
         "valid_total_charges": (df["TotalCharges"] >= 0).all(),
-        "valid_contract": df["Contract"].isin(["Month-to-month", "One year", "Two year"]).all(),
-        "valid_internet": df["InternetService"].isin(["DSL", "Fiber optic", "No"]).all(),
-        "valid_payment": df["PaymentMethod"].isin([
-            "Electronic check", "Mailed check",
-            "Bank transfer (automatic)", "Credit card (automatic)"
-        ]).all(),
+        "valid_contract": df["Contract"]
+        .isin(["Month-to-month", "One year", "Two year"])
+        .all(),
+        "valid_internet": df["InternetService"]
+        .isin(["DSL", "Fiber optic", "No"])
+        .all(),
+        "valid_payment": df["PaymentMethod"]
+        .isin(
+            [
+                "Electronic check",
+                "Mailed check",
+                "Bank transfer (automatic)",
+                "Credit card (automatic)",
+            ]
+        )
+        .all(),
         "row_count_ok": len(df) >= 1000,
         "churn_rate_reasonable": 0.10 <= df["Churn"].eq("Yes").mean() <= 0.60,
     }
@@ -235,7 +288,7 @@ def validate_data() -> Tuple[pd.DataFrame, bool]:
 
     # Log detailed stats
     churn_rate = df["Churn"].eq("Yes").mean()
-    logger.info(f"📊 Validation Summary:")
+    logger.info("📊 Validation Summary:")
     logger.info(f"   Total rows: {len(df)}")
     logger.info(f"   Null values: {df.isnull().sum().sum()}")
     logger.info(f"   Churn rate: {churn_rate:.2%}")
@@ -256,8 +309,12 @@ def validate_data() -> Tuple[pd.DataFrame, bool]:
         df_ch["pipeline_run_id"] = run_id
 
         # Ensure correct types for ClickHouse
-        df_ch["TotalCharges"] = pd.to_numeric(df_ch["TotalCharges"], errors="coerce").fillna(0.0)
-        df_ch["MonthlyCharges"] = pd.to_numeric(df_ch["MonthlyCharges"], errors="coerce").fillna(0.0)
+        df_ch["TotalCharges"] = pd.to_numeric(
+            df_ch["TotalCharges"], errors="coerce"
+        ).fillna(0.0)
+        df_ch["MonthlyCharges"] = pd.to_numeric(
+            df_ch["MonthlyCharges"], errors="coerce"
+        ).fillna(0.0)
         df_ch["SeniorCitizen"] = df_ch["SeniorCitizen"].astype("int8")
 
         validated_table = os.getenv("CLICKHOUSE_VALIDATED_TABLE", "churn_validated")
@@ -275,7 +332,9 @@ def validate_data() -> Tuple[pd.DataFrame, bool]:
         logger.warning("⚠️  Continuing without ClickHouse storage...")
 
     # ── Emit COMPLETE lineage event ────────────────────────────────────────────
-    emit_validation_lineage(run_id, "COMPLETE", str(raw_path), success=validation_success)
+    emit_validation_lineage(
+        run_id, "COMPLETE", str(raw_path), success=validation_success
+    )
 
     # ── Try Great Expectations HTML report ────────────────────────────────────
     try:
@@ -292,7 +351,6 @@ def validate_data() -> Tuple[pd.DataFrame, bool]:
 def _run_ge_checkpoint(df: pd.DataFrame, suite_name: str, run_id: str) -> None:
     """Run Great Expectations checkpoint and generate Data Docs."""
     import great_expectations as gx
-    from great_expectations.core.batch import RuntimeBatchRequest
 
     ge_dir = Path("great_expectations")
     ge_dir.mkdir(exist_ok=True)
@@ -301,7 +359,7 @@ def _run_ge_checkpoint(df: pd.DataFrame, suite_name: str, run_id: str) -> None:
 
     try:
         ds = context.data_sources.add_pandas(name="churn_runtime")
-        asset = ds.add_dataframe_asset(name="churn_df")
+        asset = ds.add_dataframe_asset(name="churn_d")
 
         suite = context.add_or_update_expectation_suite(suite_name)
         validator = context.get_validator(
@@ -313,8 +371,12 @@ def _run_ge_checkpoint(df: pd.DataFrame, suite_name: str, run_id: str) -> None:
         validator.expect_table_row_count_to_be_between(min_value=1000, max_value=100000)
         validator.expect_column_values_to_not_be_null("customerID")
         validator.expect_column_values_to_be_in_set("Churn", value_set=["Yes", "No"])
-        validator.expect_column_values_to_be_between("tenure", min_value=0, max_value=120)
-        validator.expect_column_values_to_be_between("MonthlyCharges", min_value=0, max_value=200)
+        validator.expect_column_values_to_be_between(
+            "tenure", min_value=0, max_value=120
+        )
+        validator.expect_column_values_to_be_between(
+            "MonthlyCharges", min_value=0, max_value=200
+        )
         validator.save_expectation_suite(discard_failed_expectations=False)
 
         results = validator.validate()
@@ -327,11 +389,14 @@ def _run_ge_checkpoint(df: pd.DataFrame, suite_name: str, run_id: str) -> None:
 
         with open(results_file, "w") as f:
             json.dump(results.to_json_dict(), f, indent=2)
-        
+
         with open(latest_file, "w") as f:
             json.dump(results.to_json_dict(), f, indent=2)
 
-        success_rate = results.statistics["successful_expectations"] / results.statistics["evaluated_expectations"]
+        success_rate = (
+            results.statistics["successful_expectations"]
+            / results.statistics["evaluated_expectations"]
+        )
         logger.info(
             f"📋 GE Results: {results.statistics['successful_expectations']}/"
             f"{results.statistics['evaluated_expectations']} passed "

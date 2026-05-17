@@ -2,27 +2,33 @@
 FastAPI model serving with Prometheus metrics, ClickHouse prediction logging,
 and OpenLineage event emission.
 """
-import os
+
 import json
+import os
+import pickle
 import time
 import uuid
-import pickle
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
-from datetime import datetime, timezone
 
-import pandas as pd
-import numpy as np
 import mlflow
 import mlflow.pyfunc
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Request, Query
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
-from pydantic import BaseModel, Field
-from loguru import logger
+import pandas as pd
 from dotenv import load_dotenv
+from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from feast import FeatureStore
+from loguru import logger
+from prometheus_client import (
+    CONTENT_TYPE_LATEST,
+    Counter,
+    Gauge,
+    Histogram,
+    generate_latest,
+)
+from pydantic import BaseModel, Field
+
 from src.monitoring.retraining_trigger import trigger_retraining
 
 load_dotenv()
@@ -48,21 +54,24 @@ app.add_middleware(
 PREDICTION_COUNTER = Counter(
     "churn_predictions_total",
     "Total number of churn predictions",
-    ["model_name", "prediction_result"]
+    ["model_name", "prediction_result"],
 )
 PREDICTION_LATENCY = Histogram(
     "churn_prediction_latency_seconds",
     "Prediction latency in seconds",
-    buckets=[0.01, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5]
+    buckets=[0.01, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5],
 )
 CHURN_PROBABILITY = Histogram(
     "churn_probability_distribution",
     "Distribution of predicted churn probabilities",
-    buckets=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    buckets=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
 )
 ACTIVE_REQUESTS = Gauge("churn_active_requests", "Number of active requests")
-MODEL_VERSION_GAUGE = Gauge("churn_model_version", "Current model version", ["model_name"])
+MODEL_VERSION_GAUGE = Gauge(
+    "churn_model_version", "Current model version", ["model_name"]
+)
 DATA_DRIFT_SCORE = Gauge("churn_drift_score", "Latest data drift score")
+
 
 # ── Pydantic Schemas ──────────────────────────────────────────────────────────
 class CustomerFeatures(BaseModel):
@@ -101,14 +110,25 @@ class CustomerFeatures(BaseModel):
                 "tenure": 12,
                 "MonthlyCharges": 65.5,
                 "TotalCharges": 786.0,
-                "SeniorCitizen": 0, "Partner": 1, "Dependents": 0,
-                "PhoneService": 1, "MultipleLines": 0,
-                "OnlineSecurity": 0, "OnlineBackup": 1, "DeviceProtection": 0,
-                "TechSupport": 0, "StreamingTV": 0, "StreamingMovies": 0,
-                "PaperlessBilling": 1, "gender_Male": 0,
-                "InternetService_Fiber": 0, "InternetService_No": 0,
-                "Contract_OneYear": 0, "Contract_TwoYear": 0,
-                "PaymentMethod_CreditCard": 0, "PaymentMethod_ElecCheck": 1,
+                "SeniorCitizen": 0,
+                "Partner": 1,
+                "Dependents": 0,
+                "PhoneService": 1,
+                "MultipleLines": 0,
+                "OnlineSecurity": 0,
+                "OnlineBackup": 1,
+                "DeviceProtection": 0,
+                "TechSupport": 0,
+                "StreamingTV": 0,
+                "StreamingMovies": 0,
+                "PaperlessBilling": 1,
+                "gender_Male": 0,
+                "InternetService_Fiber": 0,
+                "InternetService_No": 0,
+                "Contract_OneYear": 0,
+                "Contract_TwoYear": 0,
+                "PaymentMethod_CreditCard": 0,
+                "PaymentMethod_ElecCheck": 1,
                 "PaymentMethod_MailedCheck": 0,
             }
         }
@@ -180,7 +200,9 @@ class ModelState:
             client = mlflow.tracking.MlflowClient()
             versions = client.get_latest_versions(model_name, stages=[model_stage])
             cls.model_version = versions[0].version if versions else "1"
-            logger.success(f"✅ Model loaded from MLflow: {model_name} v{cls.model_version}")
+            logger.success(
+                f"✅ Model loaded from MLflow: {model_name} v{cls.model_version}"
+            )
         except Exception as e:
             logger.warning(f"⚠️  MLflow load failed ({e}), loading from local pkl...")
             pkl_path = Path("artifacts/models/best_model.pkl")
@@ -199,10 +221,14 @@ class ModelState:
             with open(fc_path) as f:
                 cls.feature_cols = json.load(f)
         logger.info(f"📋 Feature columns: {len(cls.feature_cols)}")
-        MODEL_VERSION_GAUGE.labels(model_name=cls.model_name).set(float(cls.model_version.replace("local", "0")))
+        MODEL_VERSION_GAUGE.labels(model_name=cls.model_name).set(
+            float(cls.model_version.replace("local", "0"))
+        )
 
 
-def customer_to_features(customer: CustomerFeatures, feature_cols: List[str]) -> pd.DataFrame:
+def customer_to_features(
+    customer: CustomerFeatures, feature_cols: List[str]
+) -> pd.DataFrame:
     """Convert CustomerFeatures to model input DataFrame."""
     data = customer.model_dump(exclude={"customerID"})
 
@@ -216,10 +242,19 @@ def customer_to_features(customer: CustomerFeatures, feature_cols: List[str]) ->
     if data.get("has_internet") is None:
         data["has_internet"] = 1 - data.get("InternetService_No", 0)
     if data.get("num_services") is None:
-        svc = sum([data.get(c, 0) for c in [
-            "OnlineSecurity", "OnlineBackup", "DeviceProtection",
-            "TechSupport", "StreamingTV", "StreamingMovies"
-        ]])
+        svc = sum(
+            [
+                data.get(c, 0)
+                for c in [
+                    "OnlineSecurity",
+                    "OnlineBackup",
+                    "DeviceProtection",
+                    "TechSupport",
+                    "StreamingTV",
+                    "StreamingMovies",
+                ]
+            ]
+        )
         data["num_services"] = svc
 
     df = pd.DataFrame([data])
@@ -249,6 +284,7 @@ async def log_prediction_to_clickhouse(response: PredictionResponse) -> None:
     """Background task: log prediction to ClickHouse."""
     try:
         from src.data.clickhouse_client import get_clickhouse_client
+
         ch = get_clickhouse_client()
         db = os.getenv("CLICKHOUSE_DATABASE", "churn_mlops")
         ch.client.command(f"""
@@ -288,6 +324,7 @@ async def health_check():
 @app.get("/metrics", tags=["Monitoring"])
 async def metrics():
     from fastapi.responses import Response
+
     return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
@@ -307,10 +344,14 @@ async def predict(
         # Check if we need to fetch features from Feast
         # We fetch from Feast if only customerID is provided (most other fields are None)
         input_data = customer.model_dump()
-        filled_fields = [k for k, v in input_data.items() if v is not None and k != "customerID"]
-        
+        filled_fields = [
+            k for k, v in input_data.items() if v is not None and k != "customerID"
+        ]
+
         if len(filled_fields) == 0 and ModelState.fs:
-            logger.info(f"🔍 Fetching features from Feast for customer: {customer.customerID}")
+            logger.info(
+                f"🔍 Fetching features from Feast for customer: {customer.customerID}"
+            )
             try:
                 feature_vector = ModelState.fs.get_online_features(
                     features=[
@@ -342,16 +383,16 @@ async def predict(
                         "customer_billing:PaymentMethod_ElecCheck",
                         "customer_billing:PaymentMethod_MailedCheck",
                     ],
-                    entity_rows=[{"customerID": customer.customerID}]
+                    entity_rows=[{"customerID": customer.customerID}],
                 ).to_dict()
-                
+
                 # Update input data with fetched features
                 for k, v in feature_vector.items():
                     # Feast returns feature names as 'view:feature' or just 'feature'
                     feat_name = k.split(":")[-1] if ":" in k else k
                     if feat_name in input_data:
                         input_data[feat_name] = v[0]
-                
+
                 # Re-create customer object with filled features
                 customer = CustomerFeatures(**input_data)
             except Exception as e:
@@ -379,7 +420,7 @@ async def predict(
         # Prometheus
         PREDICTION_COUNTER.labels(
             model_name=ModelState.model_name,
-            prediction_result="churn" if pred else "no_churn"
+            prediction_result="churn" if pred else "no_churn",
         ).inc()
         PREDICTION_LATENCY.observe(latency_ms / 1000)
         CHURN_PROBABILITY.observe(proba)
@@ -454,7 +495,9 @@ async def model_info():
 async def get_latest_drift():
     """Get latest Evidently drift report summary."""
     report_dir = Path("artifacts/drift_reports")
-    reports = sorted(report_dir.glob("*.json"), reverse=True) if report_dir.exists() else []
+    reports = (
+        sorted(report_dir.glob("*.json"), reverse=True) if report_dir.exists() else []
+    )
     if not reports:
         return {"message": "No drift reports available yet."}
     with open(reports[0]) as f:
@@ -466,6 +509,7 @@ async def get_prediction_history(limit: int = 50):
     """Fetch recent predictions from ClickHouse."""
     try:
         from src.data.clickhouse_client import get_clickhouse_client
+
         ch = get_clickhouse_client()
         db = os.getenv("CLICKHOUSE_DATABASE", "churn_mlops")
         sql = f"""
