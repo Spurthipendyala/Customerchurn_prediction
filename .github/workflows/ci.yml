@@ -210,8 +210,10 @@ jobs:
 
       - name: Update K8s image tags
         run: |
-          API_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/churn-api:sha-${{ github.sha }}"
-          FE_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/churn-frontend:sha-${{ github.sha }}"
+          # Lowercase the image name for Docker/K8s compatibility
+          IMAGE_NAME_LOWER=$(echo "${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')
+          API_IMAGE="${{ env.REGISTRY }}/${IMAGE_NAME_LOWER}/churn-api:sha-${{ github.sha }}"
+          FE_IMAGE="${{ env.REGISTRY }}/${IMAGE_NAME_LOWER}/churn-frontend:sha-${{ github.sha }}"
 
           # Update API deployment
           sed -i "s|image: .*churn-api.*|image: ${API_IMAGE}|g" k8s/api-deployment.yaml

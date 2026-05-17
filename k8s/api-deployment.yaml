@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: churn-api
-          image: ghcr.io/Spurthipendyala/Customerchurn_prediction/churn-api:sha-c18b257be21c030e3cb4f00e459c49257cd6f6b0
+          image: ghcr.io/spurthipendyala/customerchurn_prediction/churn-api:sha-c18b257be21c030e3cb4f00e459c49257cd6f6b0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
