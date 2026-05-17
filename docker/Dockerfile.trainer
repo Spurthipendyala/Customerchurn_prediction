@@ -5,7 +5,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 COPY params.yaml .
-COPY .env .
+# NOTE: .env injected at runtime, not baked into image
 COPY Raw_data_set/ ./Raw_data_set/
 RUN mkdir -p data/raw data/processed data/reference data/features \
     artifacts/models artifacts/metrics artifacts/plots artifacts/reports logs mlruns

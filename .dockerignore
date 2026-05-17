@@ -13,3 +13,7 @@ __pycache__/
 .pytest_cache/
 .gx/
 great_expectations/uncommitted/
+# Never bake secrets into images
+.env
+.env.*
+!.env.example

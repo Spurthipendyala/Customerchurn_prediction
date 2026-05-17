@@ -14,7 +14,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 COPY api/ ./api/
 COPY params.yaml .
-COPY .env .
+# NOTE: .env is intentionally NOT copied. Secrets are injected at runtime
+# via Kubernetes secrets, Docker --env-file, or CI environment variables.
 
 # Create artifact dirs
 RUN mkdir -p artifacts/models artifacts/metrics artifacts/drift_reports logs mlruns
