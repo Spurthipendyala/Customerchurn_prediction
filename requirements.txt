@@ -54,7 +54,7 @@ python-dotenv==1.0.1
 pyyaml==6.0.1
 loguru==0.7.2
 tqdm==4.66.4
-requests==2.31.0
+requests>=2.32.0
 tenacity==8.3.0
 rich==13.7.1
 
