@@ -212,8 +212,9 @@ jobs:
         run: |
           # Lowercase the image name for Docker/K8s compatibility
           IMAGE_NAME_LOWER=$(echo "${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')
-          API_IMAGE="${{ env.REGISTRY }}/${IMAGE_NAME_LOWER}/churn-api:sha-${{ github.sha }}"
-          FE_IMAGE="${{ env.REGISTRY }}/${IMAGE_NAME_LOWER}/churn-frontend:sha-${{ github.sha }}"
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          API_IMAGE="${{ env.REGISTRY }}/${IMAGE_NAME_LOWER}/churn-api:sha-${SHORT_SHA}"
+          FE_IMAGE="${{ env.REGISTRY }}/${IMAGE_NAME_LOWER}/churn-frontend:sha-${SHORT_SHA}"
 
           # Update API deployment
           sed -i "s|image: .*churn-api.*|image: ${API_IMAGE}|g" k8s/api-deployment.yaml
@@ -226,7 +227,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git add k8s/*.yaml
-          git diff --staged --quiet || (git commit -m "ci: update image tags to sha-${{ github.sha }}" && git pull --rebase origin main && git push)
+          git diff --staged --quiet || (git commit -m "ci: update image tags to sha-${SHORT_SHA}" && git pull --rebase origin main && git push)
 
   # ─── Promptfoo Evaluation ────────────────────────────────────────────────────
   promptfoo-eval:
