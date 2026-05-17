@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/Spurthipendyala/Customerchurn_prediction.git
-    targetRevision: master
+    targetRevision: main
     path: k8s
   destination:
     server: https://kubernetes.default.svc
